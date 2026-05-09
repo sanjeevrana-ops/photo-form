@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
- 
+
   :root {
     --bg:         #0d0d0f;
     --surface:    #141418;
@@ -27,15 +27,14 @@
     --radius:     14px;
     --radius-sm:  9px;
   }
- 
+
   body {
     font-family: 'DM Sans', sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
   }
- 
-  /* Background grid */
+
   body::before {
     content: '';
     position: fixed;
@@ -47,8 +46,7 @@
     pointer-events: none;
     z-index: 0;
   }
- 
-  /* ── Header ── */
+
   .header {
     position: sticky; top: 0; z-index: 50;
     background: rgba(13,13,15,0.92);
@@ -61,415 +59,230 @@
     justify-content: space-between;
     height: 56px;
   }
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .header-logo {
-    font-family: 'Syne', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text);
-  }
-  .header-sep { color: var(--text-muted); font-size: 12px; }
-  .header-sub { font-size: 12px; color: var(--text-muted); }
- 
+  .header-left { display: flex; align-items: center; gap: 10px; }
+  .header-logo { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); }
+  .header-sep  { color: var(--text-muted); font-size: 12px; }
+  .header-sub  { font-size: 12px; color: var(--text-muted); }
+
   .progress-pill {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 4px 12px;
-    font-size: 11px;
-    color: var(--text-muted);
+    display: flex; align-items: center; gap: 6px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 11px; color: var(--text-muted);
   }
-  .progress-dots {
-    display: flex;
-    gap: 4px;
-  }
-  .pdot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--border-hi);
-    transition: background 0.3s;
-  }
+  .progress-dots { display: flex; gap: 4px; }
+  .pdot { width: 6px; height: 6px; border-radius: 50%; background: var(--border-hi); transition: background 0.3s; }
   .pdot.filled { background: var(--accent); }
- 
+
   .logout-btn {
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text-muted);
-    font-size: 11px;
-    font-family: 'DM Sans', sans-serif;
-    padding: 5px 10px;
-    cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
+    background: none; border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text-muted); font-size: 11px; font-family: 'DM Sans', sans-serif;
+    padding: 5px 10px; cursor: pointer; transition: border-color 0.2s, color 0.2s;
   }
   .logout-btn:hover { border-color: var(--border-hi); color: var(--text-soft); }
- 
-  /* ── Body ── */
+
   .body {
-    position: relative;
-    z-index: 1;
+    position: relative; z-index: 1;
     padding: 24px 16px 60px;
-    max-width: 460px;
-    margin: 0 auto;
+    max-width: 460px; margin: 0 auto;
   }
- 
-  /* ── Hero ── */
-  .hero {
-    padding: 24px 0 8px;
-    margin-bottom: 20px;
-  }
+
+  .hero { padding: 24px 0 8px; margin-bottom: 20px; }
   .hero-tag {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 8px;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
   }
   .hero h2 {
-    font-family: 'Syne', sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 6px;
-    line-height: 1.2;
+    font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700;
+    color: var(--text); margin-bottom: 6px; line-height: 1.2;
   }
-  .hero p {
-    font-size: 13px;
-    color: var(--text-soft);
-    line-height: 1.6;
-  }
+  .hero p { font-size: 13px; color: var(--text-soft); line-height: 1.6; }
   .user-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    margin-top: 10px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 4px 10px;
-    font-size: 11px;
-    color: var(--text-soft);
+    display: inline-flex; align-items: center; gap: 5px; margin-top: 10px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 4px 10px; font-size: 11px; color: var(--text-soft);
   }
- 
-  /* ── Cards ── */
+
   .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 14px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; margin-bottom: 14px;
   }
   .card-title {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
   }
-  .card-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
- 
-  /* ── Fields ── */
+  .card-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
   .field { margin-bottom: 14px; }
   .field:last-child { margin-bottom: 0; }
   .field label {
-    display: block;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 7px;
+    display: block; font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 7px;
   }
   .req { color: var(--danger); margin-left: 2px; }
   .input-wrap { position: relative; }
   .input-icon {
-    position: absolute;
-    left: 13px; top: 50%;
-    transform: translateY(-50%);
-    font-size: 14px;
-    pointer-events: none;
-    opacity: 0.4;
+    position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+    font-size: 14px; pointer-events: none; opacity: 0.4;
   }
   .field input {
-    width: 100%;
-    padding: 12px 14px 12px 40px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.2s, background 0.2s;
-    -webkit-appearance: none;
+    width: 100%; padding: 12px 14px 12px 40px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif;
+    font-size: 14px; color: var(--text); outline: none;
+    transition: border-color 0.2s, background 0.2s; -webkit-appearance: none;
   }
   .field input::placeholder { color: var(--text-muted); }
   .field input:focus { border-color: var(--border-hi); background: var(--surface3); }
   .field input.error { border-color: var(--danger); }
   .err-msg { font-size: 11px; color: var(--danger); margin-top: 5px; display: none; }
-  .field input.error + .err-msg { display: block; }
- 
-  /* ── Photo grid ── */
-  .photo-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
- 
+  .field input.error ~ .err-msg { display: block; }
+
+  .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
   .photo-slot {
-    position: relative;
-    aspect-ratio: 4/5;
-    border-radius: var(--radius-sm);
-    border: 1.5px dashed rgba(255,255,255,0.12);
-    background: var(--surface2);
-    overflow: hidden;
-    cursor: pointer;
+    position: relative; aspect-ratio: 4/5;
+    border-radius: var(--radius-sm); border: 1.5px dashed rgba(255,255,255,0.12);
+    background: var(--surface2); overflow: hidden; cursor: pointer;
     transition: border-color 0.2s, background 0.2s;
   }
   .photo-slot:hover { border-color: rgba(212,168,67,0.4); background: rgba(212,168,67,0.04); }
   .photo-slot.has-photo { border-style: solid; border-color: var(--success); }
   .photo-slot.error-slot { border-color: var(--danger); }
- 
+
   .slot-inner {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
   }
   .slot-cam {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    background: rgba(212,168,67,0.1);
-    border: 1px solid rgba(212,168,67,0.2);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(212,168,67,0.1); border: 1px solid rgba(212,168,67,0.2);
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
   }
-  .slot-lbl {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-soft);
-    text-align: center;
-  }
-  .slot-sub {
-    font-size: 10px;
-    color: var(--text-muted);
-  }
- 
+  .slot-lbl { font-size: 12px; font-weight: 500; color: var(--text-soft); text-align: center; }
+  .slot-sub { font-size: 10px; color: var(--text-muted); }
+
   .slot-preview {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: none;
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; display: none;
   }
   .photo-slot.has-photo .slot-preview { display: block; }
   .photo-slot.has-photo .slot-inner   { display: none; }
- 
+
   .slot-badge {
-    position: absolute;
-    top: 6px; right: 6px;
-    background: rgba(0,0,0,0.65);
-    color: #fff;
-    font-size: 9px;
-    font-weight: 600;
-    padding: 2px 7px;
-    border-radius: 20px;
-    display: none;
+    position: absolute; top: 6px; right: 6px;
+    background: rgba(0,0,0,0.65); color: #fff;
+    font-size: 9px; font-weight: 600; padding: 2px 7px;
+    border-radius: 20px; display: none;
   }
   .photo-slot.has-photo .slot-badge { display: block; }
- 
+
   .slot-retake {
-    position: absolute;
-    bottom: 7px; left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.7);
-    color: rgba(255,255,255,0.85);
-    font-size: 10px;
-    padding: 4px 12px;
-    border-radius: 20px;
-    white-space: nowrap;
-    display: none;
-    letter-spacing: 0.02em;
+    position: absolute; bottom: 7px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.7); color: rgba(255,255,255,0.85);
+    font-size: 10px; padding: 4px 12px; border-radius: 20px;
+    white-space: nowrap; display: none;
   }
   .photo-slot.has-photo .slot-retake { display: block; }
- 
+
   .slot-comp {
-    position: absolute;
-    inset: 0;
-    background: rgba(13,13,15,0.8);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 8px;
+    position: absolute; inset: 0; background: rgba(13,13,15,0.8);
+    display: none; align-items: center; justify-content: center;
+    flex-direction: column; gap: 8px;
   }
   .slot-comp.active { display: flex; }
   .slot-comp p { color: var(--text-soft); font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; }
- 
+
   .spinner {
     width: 20px; height: 20px;
     border: 2px solid rgba(255,255,255,0.15);
-    border-top-color: var(--accent);
-    border-radius: 50%;
+    border-top-color: var(--accent); border-radius: 50%;
     animation: spin 0.7s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
- 
-  /* Photo note */
+
   .photo-note {
-    margin-top: 12px;
-    padding: 10px 12px;
-    background: var(--accent-dim);
-    border: 1px solid rgba(212,168,67,0.15);
-    border-radius: var(--radius-sm);
-    font-size: 11px;
-    color: rgba(212,168,67,0.8);
-    line-height: 1.5;
-    display: flex;
-    gap: 8px;
+    margin-top: 12px; padding: 10px 12px;
+    background: var(--accent-dim); border: 1px solid rgba(212,168,67,0.15);
+    border-radius: var(--radius-sm); font-size: 11px; color: rgba(212,168,67,0.8);
+    line-height: 1.5; display: flex; gap: 8px;
   }
-  .photos-err {
-    margin-top: 8px;
-    font-size: 11px;
-    color: var(--danger);
-    display: none;
+  .photos-err { margin-top: 8px; font-size: 11px; color: var(--danger); display: none; }
+
+  /* Upload progress bar */
+  .upload-progress {
+    display: none; margin-top: 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 20px;
   }
- 
-  /* Status steps */
-  .status-card {
-    display: none;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px 20px;
-    margin-top: 12px;
+  .upload-progress.show { display: block; }
+  .up-label { font-size: 12px; color: var(--text-soft); margin-bottom: 10px; }
+  .up-bar-bg {
+    height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden;
   }
-  .status-card.show { display: block; }
-  .status-step {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 0;
-    font-size: 13px;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border);
+  .up-bar-fill {
+    height: 100%; background: var(--accent); border-radius: 2px;
+    width: 0%; transition: width 0.4s ease;
   }
-  .status-step:last-child { border-bottom: none; }
-  .sdot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--border-hi);
-    flex-shrink: 0;
-    transition: background 0.3s;
+  .up-steps { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .up-step {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: var(--text-muted);
   }
-  .status-step.done .sdot { background: var(--success); }
-  .status-step.active .sdot { background: var(--accent); animation: pulse 1s infinite; }
-  .status-step.done { color: var(--text-soft); }
+  .up-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--border-hi); flex-shrink: 0; transition: background 0.3s;
+  }
+  .up-step.active .up-dot { background: var(--accent); animation: pulse 1s infinite; }
+  .up-step.done   .up-dot { background: var(--success); }
+  .up-step.done        { color: var(--text-soft); }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
- 
-  /* Submit button */
+
   .submit-btn {
-    width: 100%;
-    margin-top: 8px;
-    padding: 15px;
-    background: var(--accent);
-    color: #0d0d0f;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    width: 100%; margin-top: 8px; padding: 15px;
+    background: var(--accent); color: #0d0d0f; border: none;
+    border-radius: var(--radius-sm); font-family: 'Syne', sans-serif;
+    font-size: 14px; font-weight: 700; letter-spacing: 0.04em;
+    cursor: pointer; transition: opacity 0.2s, transform 0.1s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
   }
   .submit-btn:hover { opacity: 0.9; }
   .submit-btn:active { transform: scale(0.98); }
   .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; }
- 
-  /* Success screen */
-  .success-screen {
-    display: none;
-    text-align: center;
-    padding: 48px 20px;
-  }
+
+  .success-screen { display: none; text-align: center; padding: 48px 20px; }
   .success-screen.show { display: block; }
   .success-ring {
-    width: 80px; height: 80px;
-    border-radius: 50%;
-    background: var(--success-dim);
-    border: 1px solid rgba(61,186,126,0.25);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 36px;
+    width: 80px; height: 80px; border-radius: 50%;
+    background: var(--success-dim); border: 1px solid rgba(61,186,126,0.25);
+    display: flex; align-items: center; justify-content: center; font-size: 36px;
     margin: 0 auto 24px;
     animation: pop 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
   }
   @keyframes pop { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
-  .success-screen h2 {
-    font-family: 'Syne', sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-  .success-screen p {
-    font-size: 13px;
-    color: var(--text-soft);
-    line-height: 1.6;
-    max-width: 280px;
-    margin: 0 auto;
-  }
+  .success-screen h2 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+  .success-screen p { font-size: 13px; color: var(--text-soft); line-height: 1.6; max-width: 280px; margin: 0 auto; }
   .new-btn {
-    margin-top: 28px;
-    padding: 12px 28px;
-    background: var(--surface2);
-    border: 1px solid var(--border-hi);
-    border-radius: var(--radius-sm);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s;
+    margin-top: 28px; padding: 12px 28px;
+    background: var(--surface2); border: 1px solid var(--border-hi);
+    border-radius: var(--radius-sm); color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: background 0.2s;
   }
   .new-btn:hover { background: var(--surface3); }
- 
+
   input[type="file"] { display: none; }
 </style>
 </head>
 <body>
- 
-<!-- Auth guard -->
+
 <script>
   if (sessionStorage.getItem('loggedIn') !== 'true') {
     window.location.href = 'index.html';
   }
 </script>
- 
+
 <header class="header">
   <div class="header-left">
     <span class="header-logo">FieldDocs</span>
@@ -489,19 +302,18 @@
     <button class="logout-btn" onclick="logout()">Sign out</button>
   </div>
 </header>
- 
+
 <div class="body">
   <div class="hero">
     <div class="hero-tag">New Submission</div>
-    <h2>Document & Submit</h2>
+    <h2>Document &amp; Submit</h2>
     <p>Fill in your details below and capture all 4 photos.</p>
     <div class="user-chip">👤 Logged in as: <strong id="userLabel">—</strong></div>
   </div>
- 
+
   <!-- Personal Details -->
   <div class="card">
     <div class="card-title">Personal Details</div>
- 
     <div class="field">
       <label>ID Number <span class="req">*</span></label>
       <div class="input-wrap">
@@ -510,7 +322,6 @@
       </div>
       <div class="err-msg">Please enter your ID number.</div>
     </div>
- 
     <div class="field">
       <label>Full Name <span class="req">*</span></label>
       <div class="input-wrap">
@@ -519,7 +330,6 @@
       </div>
       <div class="err-msg">Please enter your full name.</div>
     </div>
- 
     <div class="field">
       <label>Mobile Number <span class="req">*</span></label>
       <div class="input-wrap">
@@ -529,16 +339,16 @@
       <div class="err-msg">Please enter a valid mobile number.</div>
     </div>
   </div>
- 
+
   <!-- Photos -->
   <div class="card">
     <div class="card-title">Photo Capture</div>
- 
     <div class="photo-grid">
+
       <div class="photo-slot" id="slot0" onclick="triggerCam(0)">
         <div class="slot-inner">
           <div class="slot-cam">📷</div>
-          <div class="slot-lbl">Candidate </div>
+          <div class="slot-lbl">Candidate</div>
           <div class="slot-sub">Tap to capture</div>
         </div>
         <img class="slot-preview" id="prev0" alt="">
@@ -546,7 +356,7 @@
         <div class="slot-retake">↺ Retake</div>
         <div class="slot-comp" id="comp0"><div class="spinner"></div><p>Compressing</p></div>
       </div>
- 
+
       <div class="photo-slot" id="slot1" onclick="triggerCam(1)">
         <div class="slot-inner">
           <div class="slot-cam">📷</div>
@@ -558,7 +368,7 @@
         <div class="slot-retake">↺ Retake</div>
         <div class="slot-comp" id="comp1"><div class="spinner"></div><p>Compressing</p></div>
       </div>
- 
+
       <div class="photo-slot" id="slot2" onclick="triggerCam(2)">
         <div class="slot-inner">
           <div class="slot-cam">📷</div>
@@ -570,7 +380,7 @@
         <div class="slot-retake">↺ Retake</div>
         <div class="slot-comp" id="comp2"><div class="spinner"></div><p>Compressing</p></div>
       </div>
- 
+
       <div class="photo-slot" id="slot3" onclick="triggerCam(3)">
         <div class="slot-inner">
           <div class="slot-cam">📷</div>
@@ -582,35 +392,36 @@
         <div class="slot-retake">↺ Retake</div>
         <div class="slot-comp" id="comp3"><div class="spinner"></div><p>Compressing</p></div>
       </div>
+
     </div>
- 
     <div class="photo-note">
       <span>💡</span>
-      <span>Tap a slot to open your rear camera directly. Tap a captured photo to retake it.</span>
+      <span>Tap a slot to open your rear camera. Tap a captured photo to retake it.</span>
     </div>
     <div class="photos-err" id="photosErr">All 4 photos are required before submitting.</div>
   </div>
- 
-  <!-- Hidden camera inputs — capture="environment" = rear camera on phones -->
+
+  <!-- Hidden file inputs -->
   <input type="file" id="cam0" accept="image/*" capture="environment" onchange="onCapture(event,0)">
   <input type="file" id="cam1" accept="image/*" capture="environment" onchange="onCapture(event,1)">
   <input type="file" id="cam2" accept="image/*" capture="environment" onchange="onCapture(event,2)">
   <input type="file" id="cam3" accept="image/*" capture="environment" onchange="onCapture(event,3)">
- 
+
   <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">
     <span id="btnLabel">Submit Photos</span>
   </button>
- 
-  <!-- Status steps shown during upload -->
-  <div class="status-card" id="statusCard">
-    <div class="status-step" id="st1"><div class="sdot"></div><span>Preparing photos…</span></div>
-    <div class="status-step" id="st2"><div class="sdot"></div><span>Uploading Candidate  to Google Drive…</span></div>
-    <div class="status-step" id="st3"><div class="sdot"></div><span>Uploading Aadhar Card Front to Google Drive…</span></div>
-    <div class="status-step" id="st4"><div class="sdot"></div><span>Uploading Aadhar Card Back to Google Drive…</span></div>
-    <div class="status-step" id="st5"><div class="sdot"></div><span>Uploading Bank Passbook to Google Drive…</span></div>
-    <div class="status-step" id="st6"><div class="sdot"></div><span>Saving details to Google Sheets…</span></div>
+
+  <!-- Upload progress -->
+  <div class="upload-progress" id="uploadProgress">
+    <div class="up-label" id="upLabel">Uploading…</div>
+    <div class="up-bar-bg"><div class="up-bar-fill" id="upBar"></div></div>
+    <div class="up-steps">
+      <div class="up-step" id="ust1"><div class="up-dot"></div><span>Compressing &amp; preparing photos</span></div>
+      <div class="up-step" id="ust2"><div class="up-dot"></div><span>Uploading all photos to Google Drive</span></div>
+      <div class="up-step" id="ust3"><div class="up-dot"></div><span>Saving details to Google Sheets</span></div>
+    </div>
   </div>
- 
+
   <!-- Success -->
   <div class="success-screen" id="successScreen">
     <div class="success-ring">✓</div>
@@ -619,41 +430,39 @@
     <button class="new-btn" onclick="resetForm()">Submit Another</button>
   </div>
 </div>
- 
+
 <script>
 // ── PASTE YOUR APPS SCRIPT WEB APP URL HERE ──────────────────
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNkrLP7Vx3Mf7P2IqRKDacp6f5pVDCegoPHFc_HBI8BGfSGv2pMsc4SA8hgeF6hpc/exec';
 // ─────────────────────────────────────────────────────────────
- 
-// Compression settings
-const MAX_MB  = 0.4;
-const AIM_MB  = 0.25;
-const MAX_DIM = 1024;
- 
-// Stores compressed base64 for each slot
+
+// ── KEY CHANGE: lower limits = faster upload = no timeout ────
+const MAX_MB  = 0.35;   // max file size after compression
+const AIM_MB  = 0.20;   // target file size
+const MAX_DIM = 900;    // max pixel dimension (was 1280)
+// ─────────────────────────────────────────────────────────────
+
 const photos = [null, null, null, null];
- 
-// Show logged-in username
+
 document.getElementById('userLabel').textContent =
   sessionStorage.getItem('username') || 'user';
- 
+
 function logout() {
   sessionStorage.clear();
   window.location.href = 'index.html';
 }
- 
+
 // ── COMPRESSION ───────────────────────────────────────────────
 function toBlob(canvas, q) {
   return new Promise(res => canvas.toBlob(b => res(b), 'image/jpeg', q));
 }
- 
+
 async function compress(file) {
   return new Promise(resolve => {
     const reader = new FileReader();
     reader.onload = async ev => {
       const img = new Image();
       img.onload = async () => {
-        // Scale down if needed
         let w = img.width, h = img.height;
         if (w > MAX_DIM || h > MAX_DIM) {
           const r = Math.min(MAX_DIM / w, MAX_DIM / h);
@@ -663,66 +472,64 @@ async function compress(file) {
         const canvas = document.createElement('canvas');
         canvas.width = w; canvas.height = h;
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
- 
-        // Already small enough at high quality?
-        let blob = await toBlob(canvas, 0.88);
+
+        let blob = await toBlob(canvas, 0.82);
         if (blob.size <= AIM_MB * 1048576) { resolve(blob); return; }
- 
-        // Binary search for best quality ≤ MAX_MB
-        let lo = 0.15, hi = 0.88, best = null;
-        for (let i = 0; i < 9; i++) {
+
+        let lo = 0.1, hi = 0.82, best = null;
+        for (let i = 0; i < 10; i++) {
           const mid = (lo + hi) / 2;
           blob = await toBlob(canvas, mid);
           if (blob.size <= MAX_MB * 1048576) { best = blob; lo = mid; }
           else hi = mid;
         }
-        resolve(best || await toBlob(canvas, 0.15));
+        resolve(best || await toBlob(canvas, 0.1));
       };
       img.src = ev.target.result;
     };
     reader.readAsDataURL(file);
   });
 }
- 
+
 function blobToB64(blob) {
   return new Promise(resolve => {
     const r = new FileReader();
-    r.onload = () => resolve(r.result.split(',')[1]); // raw base64, no prefix
+    r.onload = () => resolve(r.result.split(',')[1]);
     r.readAsDataURL(blob);
   });
 }
- 
-// ── CAMERA ───────────────────────────────────────────────────
+
+// ── CAMERA ────────────────────────────────────────────────────
 function triggerCam(idx) {
   const el = document.getElementById('cam' + idx);
-  el.value = ''; // allow retake same file
+  el.value = '';
   el.click();
 }
- 
+
 async function onCapture(e, idx) {
   const file = e.target.files[0];
   if (!file) return;
- 
+
   const slot  = document.getElementById('slot' + idx);
   const comp  = document.getElementById('comp' + idx);
   const prev  = document.getElementById('prev' + idx);
   const badge = document.getElementById('badge' + idx);
- 
+
   slot.classList.remove('has-photo', 'error-slot');
   comp.classList.add('active');
- 
-  const blob = await compress(file);
+
+  const blob  = await compress(file);
   photos[idx] = await blobToB64(blob);
- 
+
   prev.src = URL.createObjectURL(blob);
   badge.textContent = (blob.size / 1048576).toFixed(2) + ' MB';
   comp.classList.remove('active');
   slot.classList.add('has-photo');
- 
+
   document.getElementById('photosErr').style.display = 'none';
   updateDots();
 }
- 
+
 function updateDots() {
   photos.forEach((p, i) => {
     document.getElementById('pd' + i).classList.toggle('filled', !!p);
@@ -730,8 +537,8 @@ function updateDots() {
   const n = photos.filter(Boolean).length;
   document.getElementById('photoCount').textContent = n + '/4';
 }
- 
-// ── VALIDATION ───────────────────────────────────────────────
+
+// ── VALIDATION ────────────────────────────────────────────────
 function validate() {
   let ok = true;
   ['fieldId', 'fieldName', 'fieldMobile'].forEach(id => {
@@ -752,124 +559,135 @@ function validate() {
   }
   return ok;
 }
- 
-// ── STATUS STEPS ─────────────────────────────────────────────
-function step(n, state) {
-  const el = document.getElementById('st' + n);
-  el.classList.remove('active', 'done');
-  if (state) el.classList.add(state);
+
+// ── PROGRESS ─────────────────────────────────────────────────
+function setStep(n, state) {
+  for (let i = 1; i <= 3; i++) {
+    const el = document.getElementById('ust' + i);
+    el.classList.remove('active', 'done');
+    if (i < n)  el.classList.add('done');
+    if (i === n) el.classList.add(state || 'active');
+  }
+  const pct = Math.round(((n - 1) / 3) * 100);
+  document.getElementById('upBar').style.width = pct + '%';
 }
- 
-// ── SUBMIT ───────────────────────────────────────────────────
-// KEY FIX: Upload each photo separately then save row once.
-// This avoids hitting Apps Script's request size limits which
-// caused only 1 photo to arrive.
+
+// ── SUBMIT — single POST with all 4 photos ────────────────────
+//
+//  WHY ONE REQUEST?
+//  The old code sent 5 separate fetch() calls (4 photos + 1 save).
+//  Each call is a separate Apps Script execution with a cold start.
+//  4 photos × (cold start + Drive write + share) easily exceeded
+//  the 30-second execution limit, causing silent failures.
+//
+//  Now we send everything in ONE fetch → ONE execution → no timeout risk.
+//
 async function handleSubmit() {
   if (!validate()) {
-    document.querySelector('.error,.error-slot')
+    document.querySelector('.error, .error-slot')
       ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
- 
+
   const btn   = document.getElementById('submitBtn');
   const label = document.getElementById('btnLabel');
   btn.disabled = true;
   label.innerHTML = '<div class="spinner" style="width:16px;height:16px;border-top-color:#0d0d0f;border-color:rgba(0,0,0,0.2)"></div> Submitting…';
- 
-  document.getElementById('statusCard').classList.add('show');
-  step(1, 'active');
- 
-  const id        = document.getElementById('fieldId').value.trim();
-  const name      = document.getElementById('fieldName').value.trim();
-  const mobile    = document.getElementById('fieldMobile').value.trim();
-  const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+  const progress = document.getElementById('uploadProgress');
+  progress.classList.add('show');
+  setStep(1, 'active');
+  document.getElementById('upLabel').textContent = 'Step 1 of 3 — Preparing photos…';
+
+  const id          = document.getElementById('fieldId').value.trim();
+  const name        = document.getElementById('fieldName').value.trim();
+  const mobile      = document.getElementById('fieldMobile').value.trim();
+  const timestamp   = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
   const submittedBy = sessionStorage.getItem('username') || '';
- 
-  await pause(400);
-  step(1, 'done');
- 
+
+  // Log total payload size so you can see it in browser console
+  const totalB64Chars = photos.reduce((s, p) => s + (p ? p.length : 0), 0);
+  console.log('Total base64 chars being sent:', totalB64Chars, '(~', (totalB64Chars * 0.75 / 1048576).toFixed(2), 'MB)');
+
+  await pause(300);
+  setStep(2, 'active');
+  document.getElementById('upLabel').textContent = 'Step 2 of 3 — Uploading to Google Drive…';
+
   try {
-    const photoUrls = [];
- 
-    // Upload photos ONE AT A TIME — this is critical.
-    // Sending all 4 at once exceeds Apps Script's ~50MB JSON limit
-    // and causes silent failures where only 1 photo arrives.
-    for (let i = 0; i < 4; i++) {
-  step(i + 2, 'active');
-
-  const res  = await postWithRetry({ action: 'uploadPhoto', id, name, photoIndex: i + 1, photoData: photos[i] });
-  const raw  = await res.text();            // get raw text FIRST
-  let data;
-  try {
-    data = JSON.parse(raw);
-  } catch(e) {
-    throw new Error('Photo ' + (i+1) + ' — server returned non-JSON:\n' + raw.substring(0, 400));
-  }
-
-  if (data.status !== 'success') throw new Error('Photo ' + (i+1) + ' failed: ' + data.message);
-
-  photoUrls.push(data.url);
-  step(i + 2, 'done');
-}
- 
-    // Save the row to Sheets with all 4 URLs at once
-    step(6, 'active');
-    const finalPayload = {
-      action: 'saveRow',
-      id, name, mobile, timestamp, submittedBy,
-      urls: photoUrls,   // array of 4 Drive URLs
+    const payload = {
+      action:      'submitAll',
+      id,
+      name,
+      mobile,
+      timestamp,
+      submittedBy,
+      photos       // array of 4 base64 strings — sent in ONE request
     };
- 
-    const res2  = await postJSON(finalPayload);
-    const data2 = await res2.json();
- 
-    if (data2.status !== 'success') {
-      throw new Error('Sheet save failed: ' + data2.message);
+
+    // Single fetch — 55 second timeout (Apps Script limit is 6 min for web apps,
+    // but the fetch itself may time out at the network level if too slow)
+    const controller = new AbortController();
+    const tid = setTimeout(() => controller.abort(), 55000);
+
+    const res = await fetch(SCRIPT_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body:    JSON.stringify(payload),
+      signal:  controller.signal
+    });
+    clearTimeout(tid);
+
+    // Read as text first so we can show it if it's not valid JSON
+    const raw = await res.text();
+    console.log('Server response:', raw.substring(0, 500));
+
+    let data;
+    try {
+      data = JSON.parse(raw);
+    } catch(e) {
+      throw new Error('Server returned unexpected response:\n' + raw.substring(0, 400));
     }
- 
-    step(6, 'done');
-    await pause(400);
+
+    if (data.status !== 'success') {
+      throw new Error(data.message || 'Unknown error from server');
+    }
+
+    setStep(3, 'active');
+    document.getElementById('upLabel').textContent = 'Step 3 of 3 — Saving to Sheets…';
+    await pause(600);
+
+    document.getElementById('upBar').style.width = '100%';
+    document.getElementById('upLabel').textContent = 'Done!';
+    setStep(3, 'done');
+
+    await pause(500);
     showSuccess();
- 
+
   } catch (err) {
+    console.error('Submit error:', err);
     btn.disabled = false;
     label.textContent = 'Submit Photos';
-    document.getElementById('statusCard').classList.remove('show');
-    for (let i = 1; i <= 6; i++) step(i, '');
-    alert('Submission failed — please check your internet connection and try again.\n\nError: ' + err.message);
-  }
-}
- // REPLACE old postJSON with this:
-async function postWithRetry(payload, retries = 2) {
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    try {
-      const controller = new AbortController();
-      const tid = setTimeout(() => controller.abort(), 25000);
-      const res = await fetch(SCRIPT_URL, {
-        method:  'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body:    JSON.stringify(payload),
-        signal:  controller.signal
-      });
-      clearTimeout(tid);
-      return res;
-    } catch(e) {
-      if (attempt === retries) throw e;
-      await pause(2000);
+    progress.classList.remove('show');
+    setStep(1, '');
+
+    let msg = err.message || String(err);
+    if (err.name === 'AbortError') {
+      msg = 'Request timed out after 55 seconds.\n\nThis usually means your internet connection is slow. Try on WiFi and submit again.';
     }
+    alert('Submission failed.\n\n' + msg);
   }
 }
- 
+
 function pause(ms) { return new Promise(r => setTimeout(r, ms)); }
- 
+
 function showSuccess() {
   document.querySelectorAll('.card').forEach(c => c.style.display = 'none');
-  document.getElementById('submitBtn').style.display = 'none';
-  document.getElementById('statusCard').style.display = 'none';
-  document.querySelector('.hero').style.display = 'none';
+  document.getElementById('submitBtn').style.display  = 'none';
+  document.getElementById('uploadProgress').style.display = 'none';
+  document.querySelector('.hero').style.display       = 'none';
   document.getElementById('successScreen').classList.add('show');
 }
- 
+
 function resetForm() {
   photos.fill(null);
   ['fieldId', 'fieldName', 'fieldMobile'].forEach(id => {
@@ -886,15 +704,14 @@ function resetForm() {
   const btn = document.getElementById('submitBtn');
   btn.style.display = 'flex'; btn.disabled = false;
   document.getElementById('btnLabel').textContent = 'Submit Photos';
-  document.getElementById('statusCard').classList.remove('show');
-  document.getElementById('statusCard').style.display = '';
+  const progress = document.getElementById('uploadProgress');
+  progress.classList.remove('show');
+  progress.style.display = '';
   document.querySelector('.hero').style.display = 'block';
   document.getElementById('successScreen').classList.remove('show');
-  for (let i = 1; i <= 6; i++) step(i, '');
   updateDots();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
 </body>
 </html>
- 
