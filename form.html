@@ -843,12 +843,11 @@ async function handleSubmit() {
     alert('Submission failed — please check your internet connection and try again.\n\nError: ' + err.message);
   }
 }
- 
-function postJSON(payload) {
+ function postJSON(payload) {
   return fetch(SCRIPT_URL, {
     method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
     body:   JSON.stringify(payload),
-    // No Content-Type header avoids CORS preflight
   });
 }
  
