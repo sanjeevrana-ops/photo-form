@@ -626,9 +626,9 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNkrLP7Vx3Mf7P2IqRK
 // ─────────────────────────────────────────────────────────────
  
 // Compression settings
-const MAX_MB  = 0.6;
-const AIM_MB  = 0.35;
-const MAX_DIM = 1280;
+const MAX_MB  = 0.4;
+const AIM_MB  = 0.25;
+const MAX_DIM = 1024;
  
 // Stores compressed base64 for each slot
 const photos = [null, null, null, null];
@@ -795,26 +795,22 @@ async function handleSubmit() {
     // Sending all 4 at once exceeds Apps Script's ~50MB JSON limit
     // and causes silent failures where only 1 photo arrives.
     for (let i = 0; i < 4; i++) {
-      step(i + 2, 'active');
- 
-      const payload = {
-        action:    'uploadPhoto',
-        id,
-        name,
-        photoIndex: i + 1,           // 1-based
-        photoData:  photos[i],       // raw base64 string
-      };
- 
-      const res  = await postJSON(payload);
-      const data = await res.json();
- 
-      if (data.status !== 'success') {
-        throw new Error('Photo ' + (i + 1) + ' failed: ' + data.message);
-      }
- 
-      photoUrls.push(data.url);
-      step(i + 2, 'done');
-    }
+  step(i + 2, 'active');
+
+  const res  = await postWithRetry({ action: 'uploadPhoto', id, name, photoIndex: i + 1, photoData: photos[i] });
+  const raw  = await res.text();            // get raw text FIRST
+  let data;
+  try {
+    data = JSON.parse(raw);
+  } catch(e) {
+    throw new Error('Photo ' + (i+1) + ' — server returned non-JSON:\n' + raw.substring(0, 400));
+  }
+
+  if (data.status !== 'success') throw new Error('Photo ' + (i+1) + ' failed: ' + data.message);
+
+  photoUrls.push(data.url);
+  step(i + 2, 'done');
+}
  
     // Save the row to Sheets with all 4 URLs at once
     step(6, 'active');
@@ -843,12 +839,25 @@ async function handleSubmit() {
     alert('Submission failed — please check your internet connection and try again.\n\nError: ' + err.message);
   }
 }
- function postJSON(payload) {
-  return fetch(SCRIPT_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body:   JSON.stringify(payload),
-  });
+ // REPLACE old postJSON with this:
+async function postWithRetry(payload, retries = 2) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const controller = new AbortController();
+      const tid = setTimeout(() => controller.abort(), 25000);
+      const res = await fetch(SCRIPT_URL, {
+        method:  'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body:    JSON.stringify(payload),
+        signal:  controller.signal
+      });
+      clearTimeout(tid);
+      return res;
+    } catch(e) {
+      if (attempt === retries) throw e;
+      await pause(2000);
+    }
+  }
 }
  
 function pause(ms) { return new Promise(r => setTimeout(r, ms)); }
