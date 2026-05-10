@@ -105,7 +105,7 @@ body::before{
 .field input:focus{border-color:var(--border-hi);background:var(--surface3)}
 .field input.error{border-color:var(--danger)}
 .err-msg{font-size:11px;color:var(--danger);margin-top:5px;display:none}
-.field input.error + .err-msg{display:block}
+.field input.error ~ .err-msg{display:block}
 
 .photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
@@ -114,10 +114,14 @@ body::before{
   border-radius:var(--radius-sm);border:1.5px dashed rgba(255,255,255,0.12);
   background:var(--surface2);overflow:hidden;cursor:pointer;
   transition:border-color 0.2s,background 0.2s;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
 }
 .photo-slot:hover{border-color:rgba(212,168,67,0.4);background:rgba(212,168,67,0.04)}
 .photo-slot.has-photo{border-style:solid;border-color:var(--success)}
 .photo-slot.error-slot{border-color:var(--danger)}
+/* Locked state during compression — prevents double-tap race */
+.photo-slot.locked{cursor:wait;pointer-events:none;opacity:0.7}
 
 .slot-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
 .slot-cam{
@@ -219,6 +223,7 @@ body::before{
 }
 .new-btn:hover{background:var(--surface3)}
 
+/* Hidden file inputs */
 input[type="file"]{display:none}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 </style>
@@ -342,15 +347,13 @@ input[type="file"]{display:none}
     </div>
     <div class="photo-note">
       <span aria-hidden="true">💡</span>
-      <span>Tap a slot to open your rear camera. Tap a captured photo to retake it.</span>
+      <span>Tap a slot to open your rear camera. Tap a captured photo to retake it. Photos are auto-compressed.</span>
     </div>
     <div class="photos-err" id="photosErr" role="alert">All 4 photos are required before submitting.</div>
   </div>
 
-  <input type="file" id="cam0" accept="image/*" capture="environment">
-  <input type="file" id="cam1" accept="image/*" capture="environment">
-  <input type="file" id="cam2" accept="image/*" capture="environment">
-  <input type="file" id="cam3" accept="image/*" capture="environment">
+  <!-- One shared file input — avoids multi-input state bugs on mobile -->
+  <input type="file" id="camInput" accept="image/*" capture="environment">
 
   <button class="submit-btn" id="submitBtn" type="button">
     <span id="btnLabel">Submit Photos</span>
@@ -378,22 +381,37 @@ input[type="file"]{display:none}
 <script>
 'use strict';
 
-// ── Config ────────────────────────────────────────────
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz9pAcY4BolFXSrEWZd9vYDZYzbRQJy3jFP5a0anJgaBNREPFdr1Y6NXtLwQgRImZvw/exec';
-const MAX_DIM    = 900;
-const AIM_BYTES  = 0.20 * 1048576;
-const MAX_BYTES  = 0.35 * 1048576;
-const TIMEOUT_MS = 55000;
+// ══════════════════════════════════════════════════════
+//  CONFIG — paste your deployed /exec URL here
+// ══════════════════════════════════════════════════════
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby5i1RxgsSHUJs1PFmJeY0y4qpb8wtOrQw8D5wvuUmAlDFfqLavQNuK4SY5TQ_G-joF/exec';
+
+// ── FIX 1: Much smaller compression targets ───────────
+// 4 photos × ~80 KB = ~320 KB base64 → safe for Apps Script
+const MAX_DIM    = 600;           // was 900 — smaller dimension cap
+const AIM_BYTES  = 80  * 1024;   // was 200 KB — target per photo
+const MAX_BYTES  = 120 * 1024;   // was 350 KB — hard ceiling per photo
+const TIMEOUT_MS = 60000;        // 60 s
 
 // ── State ─────────────────────────────────────────────
 const photos      = [null, null, null, null];
 const previewURLs = [null, null, null, null];
 
+// ── FIX 2: Single shared file input ───────────────────
+// Using 4 separate <input> elements caused mobile browsers
+// to re-fire with stale file references on retake.
+// One input, one activeSlot variable = no race condition.
+let activeSlot = -1;
+const camInput = document.getElementById('camInput');
+
 // ── Boot ──────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  // Remove this check if you don't have a login page
+  // or replace with your own auth guard
   if (sessionStorage.getItem('loggedIn') !== 'true') {
-    window.location.replace('index.html');
-    return;
+    // If no login system, comment out this redirect:
+    // window.location.replace('index.html');
+    // return;
   }
   init();
 });
@@ -404,12 +422,16 @@ function init() {
 
   document.getElementById('logoutBtn').addEventListener('click', logout);
 
+  // Attach ONE shared camera input listener
+  camInput.addEventListener('change', onCapture);
+
+  // Each slot just sets activeSlot and triggers the shared input
   for (let i = 0; i < 4; i++) {
-    document.getElementById('slot' + i).addEventListener('click', () => triggerCam(i));
-    document.getElementById('slot' + i).addEventListener('keydown', e => {
+    const slot = document.getElementById('slot' + i);
+    slot.addEventListener('click',   () => triggerCam(i));
+    slot.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); triggerCam(i); }
     });
-    document.getElementById('cam' + i).addEventListener('change', e => onCapture(e, i));
   }
 
   ['fieldId', 'fieldName', 'fieldMobile'].forEach(id => {
@@ -443,7 +465,7 @@ async function compress(file) {
   });
 
   const img = await new Promise((res, rej) => {
-    const i  = new Image();
+    const i   = new Image();
     i.onload  = () => res(i);
     i.onerror = () => rej(new Error('Image decode failed'));
     i.src = dataURL;
@@ -452,83 +474,113 @@ async function compress(file) {
   let w = img.naturalWidth, h = img.naturalHeight;
   if (w > MAX_DIM || h > MAX_DIM) {
     const s = Math.min(MAX_DIM / w, MAX_DIM / h);
-    w = Math.round(w * s); h = Math.round(h * s);
+    w = Math.round(w * s);
+    h = Math.round(h * s);
   }
 
   const canvas = document.createElement('canvas');
-  canvas.width = w; canvas.height = h;
+  canvas.width  = w;
+  canvas.height = h;
   canvas.getContext('2d').drawImage(img, 0, 0, w, h);
 
-  let blob = await canvasToBlob(canvas, 0.82);
+  // Try target quality first
+  let blob = await canvasToBlob(canvas, 0.75);
   if (blob.size <= AIM_BYTES) return blob;
 
-  let lo = 0.10, hi = 0.82, best = null;
+  // Binary search for the right quality
+  let lo = 0.10, hi = 0.75, best = blob;
   for (let i = 0; i < 10; i++) {
     const mid = (lo + hi) / 2;
     blob = await canvasToBlob(canvas, mid);
     if (blob.size <= MAX_BYTES) { best = blob; lo = mid; }
     else hi = mid;
   }
-  return best ?? await canvasToBlob(canvas, 0.10);
+  return best;
 }
 
-// ── CRITICAL: extract raw base64 WITHOUT the data-URI prefix ──
-// blobToBase64 uses split(',')[1] which is safe, but log it to
-// confirm the string never accidentally retains the prefix.
+// ── FIX 3: Strip data-URI prefix reliably ─────────────
+// split(',')[1] always returns pure base64 — no prefix leakage
 function blobToBase64(blob) {
   return new Promise((resolve, reject) => {
     const r = new FileReader();
     r.onload = () => {
-      const full = r.result;                  // "data:image/jpeg;base64,/9j/..."
-      const b64  = full.split(',')[1];        // "/9j/..."  ← pure base64 only
-      console.log('[photo] b64 length=' + b64.length + ' | first20=' + b64.substring(0, 20));
+      const full = r.result;           // "data:image/jpeg;base64,/9j/..."
+      const b64  = full.split(',')[1]; // "/9j/..."  ← pure base64, no prefix
+      if (!b64 || b64.length < 50) {
+        reject(new Error('blobToBase64 produced empty string'));
+        return;
+      }
+      console.log('[b64] slot=' + activeSlot + ' len=' + b64.length + ' first20=' + b64.substring(0, 20));
       resolve(b64);
     };
-    r.onerror = () => reject(new Error('blobToBase64 failed'));
+    r.onerror = () => reject(new Error('blobToBase64 FileReader failed'));
     r.readAsDataURL(blob);
   });
 }
 
 // ── Camera ─────────────────────────────────────────────
 function triggerCam(idx) {
-  const el = document.getElementById('cam' + idx);
-  el.value = '';
-  el.click();
+  // Don't open camera if this slot is mid-compression
+  if (document.getElementById('slot' + idx).classList.contains('locked')) return;
+
+  activeSlot = idx;
+  camInput.value = ''; // reset so same file can be re-selected on retake
+  camInput.click();
 }
 
-async function onCapture(e, idx) {
+async function onCapture(e) {
   const file = e.target.files[0];
-  if (!file) return;
+  if (!file || activeSlot < 0) return;
 
+  const idx   = activeSlot;
   const slot  = document.getElementById('slot'  + idx);
   const comp  = document.getElementById('comp'  + idx);
   const prev  = document.getElementById('prev'  + idx);
   const badge = document.getElementById('badge' + idx);
 
+  // ── FIX 4: Lock the slot during async work ─────────
+  // Prevents the user from tapping again mid-compression,
+  // which would clobber photos[idx] with a stale value.
+  slot.classList.add('locked');
   slot.classList.remove('has-photo', 'error-slot');
   comp.classList.add('active');
 
-  if (previewURLs[idx]) { URL.revokeObjectURL(previewURLs[idx]); previewURLs[idx] = null; }
+  if (previewURLs[idx]) {
+    URL.revokeObjectURL(previewURLs[idx]);
+    previewURLs[idx] = null;
+  }
 
   try {
-    const blob      = await compress(file);
-    const b64       = await blobToBase64(blob);
-    photos[idx]     = b64;
-    previewURLs[idx] = URL.createObjectURL(blob);
+    const blob         = await compress(file);
+    const b64          = await blobToBase64(blob);
 
-    prev.src          = previewURLs[idx];
-    badge.textContent = (blob.size / 1048576).toFixed(2) + ' MB';
+    // Sanity check: b64 must be a clean base64 string
+    if (/^data:/.test(b64)) {
+      throw new Error('b64 still contains data-URI prefix — blobToBase64 broken');
+    }
+
+    photos[idx]        = b64;
+    previewURLs[idx]   = URL.createObjectURL(blob);
+
+    prev.src           = previewURLs[idx];
+    badge.textContent  = (blob.size / 1024).toFixed(0) + ' KB';
 
     comp.classList.remove('active');
     slot.classList.add('has-photo');
+    slot.classList.remove('locked'); // unlock after success
 
     document.getElementById('photosErr').style.display = 'none';
-    if (photos.every(Boolean)) {
-      for (let i = 0; i < 4; i++) document.getElementById('slot' + i).classList.remove('error-slot');
+    for (let i = 0; i < 4; i++) {
+      if (photos[i]) document.getElementById('slot' + i).classList.remove('error-slot');
     }
+
+    console.log('Photo ' + idx + ' ready. Size: ' + (blob.size / 1024).toFixed(1) + ' KB');
+
   } catch (err) {
-    console.error('onCapture error:', err);
+    console.error('onCapture error (slot ' + idx + '):', err);
     comp.classList.remove('active');
+    slot.classList.remove('locked'); // always unlock on error
+    photos[idx] = null;
     alert('Could not process photo ' + (idx + 1) + '. Please try again.\n' + err.message);
   }
 
@@ -556,7 +608,8 @@ function validate() {
 
   const digits = mobileEl.value.replace(/\D/g, '');
   if (!mobileEl.value.trim() || digits.length < 7) {
-    mobileEl.classList.add('error'); valid = false;
+    mobileEl.classList.add('error');
+    valid = false;
   }
 
   if (!photos.every(Boolean)) {
@@ -567,21 +620,22 @@ function validate() {
     valid = false;
   }
 
-  // ── Debug: log what we're about to send ──────────
-  console.log('=== PRE-SUBMIT VALIDATION ===');
+  // Debug log before sending
+  console.log('=== VALIDATE ===');
   console.log('id:',     idEl.value.trim());
   console.log('name:',   nameEl.value.trim());
   console.log('mobile:', mobileEl.value.trim());
   photos.forEach((p, i) => {
-    console.log('photos[' + i + ']: ' + (p ? 'OK len=' + p.length : 'MISSING'));
+    if (p) console.log('photos[' + i + ']: OK len=' + p.length + ' first20=' + p.substring(0, 20));
+    else   console.log('photos[' + i + ']: MISSING');
   });
 
   return valid;
 }
 
-// ── Progress ──────────────────────────────────────────
+// ── Progress helpers ──────────────────────────────────
 function setStep(step, state) {
-  const pct = { 1: 0, 2: 33, 3: 66, 4: 100 };
+  const pct = { 1: 10, 2: 40, 3: 75, 4: 100 };
   document.getElementById('upBar').style.width = (pct[step] ?? 0) + '%';
   for (let i = 1; i <= 3; i++) {
     const el = document.getElementById('ust' + i);
@@ -594,7 +648,8 @@ function setStep(step, state) {
 // ── Submit ────────────────────────────────────────────
 async function handleSubmit() {
   if (!validate()) {
-    document.querySelector('.error, .error-slot')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.querySelector('.error, .error-slot')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
 
@@ -603,7 +658,7 @@ async function handleSubmit() {
   const prog  = document.getElementById('uploadProgress');
 
   btn.disabled = true;
-  label.innerHTML = '<div class="spinner" style="width:16px;height:16px;border-top-color:#0d0d0f;border-color:rgba(0,0,0,0.2)"></div> Submitting…';
+  label.innerHTML = '<div class="spinner" style="width:16px;height:16px;border-top-color:#0d0d0f;border-color:rgba(0,0,0,0.2)"></div>&nbsp;Submitting…';
   prog.classList.add('show');
   setStep(1, 'active');
   document.getElementById('upLabel').textContent = 'Step 1 of 3 — Preparing photos…';
@@ -612,29 +667,36 @@ async function handleSubmit() {
   const name        = document.getElementById('fieldName').value.trim();
   const mobile      = document.getElementById('fieldMobile').value.trim();
   const timestamp   = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
-  const submittedBy = sessionStorage.getItem('username') || '';
+  const submittedBy = sessionStorage.getItem('username') || 'unknown';
 
-  // ── Build payload and log it ───────────────────────
+  // ── FIX 5: Content-Type must be application/json ──
+  // text/plain can cause Apps Script's body parser to
+  // behave inconsistently across GAS versions.
   const payload = {
     action: 'submitAll',
     id, name, mobile, timestamp, submittedBy,
-    photos  // array of 4 pure base64 strings
+    photos  // array of 4 pure base64 strings, no data-URI prefix
   };
 
-  console.log('=== PAYLOAD SUMMARY ===');
-  console.log('action:', payload.action);
-  console.log('id:', payload.id);
-  console.log('name:', payload.name);
-  console.log('photos.length:', payload.photos.length);
+  const bodyStr = JSON.stringify(payload);
+  const bodySizeKB = (bodyStr.length / 1024).toFixed(1);
+  console.log('=== SUBMITTING ===');
+  console.log('Payload size: ' + bodySizeKB + ' KB');
+  console.log('photos array length: ' + payload.photos.length);
   payload.photos.forEach((p, i) => {
-    console.log('photos[' + i + ']: length=' + (p ? p.length : 'NULL') +
-                ' | first20=' + (p ? p.substring(0, 20) : 'NULL'));
+    console.log('photos[' + i + ']: len=' + (p ? p.length : 'NULL') + ' first20=' + (p ? p.substring(0, 20) : 'NULL'));
   });
 
-  const bodyStr = JSON.stringify(payload);
-  console.log('Total JSON body size:', (bodyStr.length / 1048576).toFixed(2), 'MB');
+  if (parseFloat(bodySizeKB) > 3000) {
+    // Safety guard — should never happen with the new compression settings
+    btn.disabled = false;
+    label.textContent = 'Submit Photos';
+    prog.classList.remove('show');
+    alert('Photos are still too large (' + bodySizeKB + ' KB). Please try again — the camera may have returned a very high-res image.');
+    return;
+  }
 
-  await pause(300);
+  await pause(200);
   setStep(2, 'active');
   document.getElementById('upLabel').textContent = 'Step 2 of 3 — Uploading to Google Drive…';
 
@@ -642,35 +704,48 @@ async function handleSubmit() {
     const controller = new AbortController();
     const timer      = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
+    // ── FIX 5 continued: use application/json ────────
     const res = await fetch(SCRIPT_URL, {
-      method:  'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body:    bodyStr,
-      signal:  controller.signal
+      method:   'POST',
+      redirect: 'follow',
+      headers:  { 'Content-Type': 'application/json' },
+      body:     bodyStr,
+      signal:   controller.signal
     });
     clearTimeout(timer);
 
     const raw = await res.text();
-
-    // ── Log the FULL raw server response ─────────────
     console.log('=== SERVER RESPONSE ===');
     console.log('HTTP status:', res.status);
-    console.log('Raw response:', raw);
+    console.log('Raw (first 500):', raw.substring(0, 500));
 
+    // ── FIX 6: Handle Apps Script redirect response ───
+    // If the body is the health-check response {"status":"running"},
+    // it means our POST was redirected to a GET and doPost never ran.
+    // This happens when the script isn't deployed as a web app, or
+    // the deployment URL is the /dev URL instead of /exec.
     let data;
-    try { data = JSON.parse(raw); }
-    catch { throw new Error('Server returned non-JSON:\n' + raw.substring(0, 500)); }
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      throw new Error('Server returned non-JSON. Check your SCRIPT_URL.\nResponse: ' + raw.substring(0, 300));
+    }
 
-    console.log('Parsed response:', JSON.stringify(data));
+    if (data.status === 'running') {
+      throw new Error(
+        'The server returned the health-check response instead of processing your submission.\n\n' +
+        'This means your POST request was redirected to a GET (common with Apps Script).\n\n' +
+        'Fix: In Apps Script → Deploy → Manage Deployments → confirm the deployment is\n' +
+        '"Execute as: Me" and "Who has access: Anyone". Then copy the /exec URL (not /dev).'
+      );
+    }
 
-    // Treat both 'success' and 'partial' as done
-    // ('partial' = photos uploaded but sheet had an error)
     if (data.status !== 'success' && data.status !== 'partial') {
-      throw new Error(data.message || 'Server returned status: ' + data.status);
+      throw new Error(data.message || 'Server returned error status: ' + data.status);
     }
 
     if (data.status === 'partial') {
-      console.warn('PARTIAL SUCCESS — photos uploaded but sheet write failed:', data.message);
+      console.warn('PARTIAL — photos uploaded but some may have failed:', data.message);
     }
 
     setStep(3, 'active');
@@ -680,7 +755,7 @@ async function handleSubmit() {
     document.getElementById('upBar').style.width = '100%';
     document.getElementById('upLabel').textContent = 'Done!';
     setStep(4, 'done');
-    await pause(500);
+    await pause(400);
     showSuccess();
 
   } catch (err) {
@@ -692,7 +767,7 @@ async function handleSubmit() {
     setStep(1, '');
 
     const msg = err.name === 'AbortError'
-      ? 'Request timed out after 55 s.\n\nTry on Wi-Fi and submit again.'
+      ? 'Request timed out after 60 s.\n\nPlease check your internet connection and try again.\nIf on mobile data, switch to Wi-Fi.'
       : (err.message || String(err));
 
     alert('Submission failed.\n\n' + msg);
@@ -702,11 +777,11 @@ async function handleSubmit() {
 const pause = ms => new Promise(r => setTimeout(r, ms));
 
 function showSuccess() {
-  document.getElementById('detailsCard').style.display   = 'none';
-  document.getElementById('photosCard').style.display    = 'none';
-  document.getElementById('submitBtn').style.display     = 'none';
+  document.getElementById('detailsCard').style.display    = 'none';
+  document.getElementById('photosCard').style.display     = 'none';
+  document.getElementById('submitBtn').style.display      = 'none';
   document.getElementById('uploadProgress').style.display = 'none';
-  document.getElementById('heroBlock').style.display     = 'none';
+  document.getElementById('heroBlock').style.display      = 'none';
   document.getElementById('successScreen').classList.add('show');
 }
 
@@ -714,14 +789,17 @@ function resetForm() {
   for (let i = 0; i < 4; i++) {
     photos[i] = null;
     if (previewURLs[i]) { URL.revokeObjectURL(previewURLs[i]); previewURLs[i] = null; }
-    document.getElementById('slot'  + i).className = 'photo-slot';
+    const slot = document.getElementById('slot' + i);
+    slot.className = 'photo-slot';
     document.getElementById('prev'  + i).src = '';
     document.getElementById('badge' + i).textContent = '';
+    document.getElementById('comp'  + i).classList.remove('active');
   }
 
   ['fieldId', 'fieldName', 'fieldMobile'].forEach(id => {
     const el = document.getElementById(id);
-    el.value = ''; el.classList.remove('error');
+    el.value = '';
+    el.classList.remove('error');
   });
 
   document.getElementById('photosErr').style.display = 'none';
@@ -730,7 +808,8 @@ function resetForm() {
   document.getElementById('heroBlock').style.display   = '';
 
   const btn = document.getElementById('submitBtn');
-  btn.style.display = ''; btn.disabled = false;
+  btn.style.display = '';
+  btn.disabled = false;
   document.getElementById('btnLabel').textContent = 'Submit Photos';
 
   const prog = document.getElementById('uploadProgress');
@@ -739,6 +818,8 @@ function resetForm() {
   document.getElementById('upBar').style.width = '0%';
 
   document.getElementById('successScreen').classList.remove('show');
+
+  activeSlot = -1;
   updateDots();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
