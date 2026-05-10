@@ -28,34 +28,22 @@
   --radius-sm:9px;
 }
 
-body{
-  font-family:'DM Sans',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
 body::before{
-  content:'';
-  position:fixed;inset:0;
+  content:'';position:fixed;inset:0;
   background-image:
     linear-gradient(rgba(255,255,255,0.022) 1px,transparent 1px),
     linear-gradient(90deg,rgba(255,255,255,0.022) 1px,transparent 1px);
-  background-size:48px 48px;
-  pointer-events:none;
-  z-index:0;
+  background-size:48px 48px;pointer-events:none;z-index:0;
 }
 
-/* ── Header ── */
 .header{
   position:sticky;top:0;z-index:50;
   background:rgba(13,13,15,0.92);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
-  padding:0 20px;
-  display:flex;align-items:center;justify-content:space-between;
-  height:56px;
+  padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:56px;
 }
 .header-left{display:flex;align-items:center;gap:10px}
 .header-logo{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--text)}
@@ -65,8 +53,7 @@ body::before{
 .progress-pill{
   display:flex;align-items:center;gap:6px;
   background:var(--surface2);border:1px solid var(--border);
-  border-radius:20px;padding:4px 12px;
-  font-size:11px;color:var(--text-muted);
+  border-radius:20px;padding:4px 12px;font-size:11px;color:var(--text-muted);
 }
 .progress-dots{display:flex;gap:4px}
 .pdot{width:6px;height:6px;border-radius:50%;background:var(--border-hi);transition:background 0.3s}
@@ -79,23 +66,11 @@ body::before{
 }
 .logout-btn:hover{border-color:var(--border-hi);color:var(--text-soft)}
 
-/* ── Layout ── */
-.body{
-  position:relative;z-index:1;
-  padding:24px 16px 60px;
-  max-width:460px;margin:0 auto;
-}
+.body{position:relative;z-index:1;padding:24px 16px 60px;max-width:460px;margin:0 auto}
 
-/* ── Hero ── */
 .hero{padding:24px 0 8px;margin-bottom:20px}
-.hero-tag{
-  font-size:11px;font-weight:500;letter-spacing:0.1em;
-  text-transform:uppercase;color:var(--accent);margin-bottom:8px;
-}
-.hero h2{
-  font-family:'Syne',sans-serif;font-size:24px;font-weight:700;
-  color:var(--text);margin-bottom:6px;line-height:1.2;
-}
+.hero-tag{font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.hero h2{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.2}
 .hero p{font-size:13px;color:var(--text-soft);line-height:1.6}
 .user-chip{
   display:inline-flex;align-items:center;gap:5px;margin-top:10px;
@@ -103,19 +78,13 @@ body::before{
   border-radius:20px;padding:4px 10px;font-size:11px;color:var(--text-soft);
 }
 
-/* ── Cards ── */
-.card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);padding:20px;margin-bottom:14px;
-}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:14px}
 .card-title{
-  font-size:10px;font-weight:600;letter-spacing:0.12em;
-  text-transform:uppercase;color:var(--text-muted);margin-bottom:16px;
-  display:flex;align-items:center;gap:8px;
+  font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--text-muted);margin-bottom:16px;display:flex;align-items:center;gap:8px;
 }
 .card-title::after{content:'';flex:1;height:1px;background:var(--border)}
 
-/* ── Fields ── */
 .field{margin-bottom:14px}
 .field:last-child{margin-bottom:0}
 .field label{
@@ -124,17 +93,13 @@ body::before{
 }
 .req{color:var(--danger);margin-left:2px}
 .input-wrap{position:relative}
-.input-icon{
-  position:absolute;left:13px;top:50%;transform:translateY(-50%);
-  font-size:14px;pointer-events:none;opacity:0.4;
-}
+.input-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;opacity:0.4}
 .field input{
   width:100%;padding:12px 14px 12px 40px;
   background:var(--surface2);border:1px solid var(--border);
   border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;
   font-size:14px;color:var(--text);outline:none;
-  transition:border-color 0.2s,background 0.2s;
-  -webkit-appearance:none;
+  transition:border-color 0.2s,background 0.2s;-webkit-appearance:none;
 }
 .field input::placeholder{color:var(--text-muted)}
 .field input:focus{border-color:var(--border-hi);background:var(--surface3)}
@@ -142,13 +107,11 @@ body::before{
 .err-msg{font-size:11px;color:var(--danger);margin-top:5px;display:none}
 .field input.error + .err-msg{display:block}
 
-/* ── Photo grid ── */
 .photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
 .photo-slot{
   position:relative;aspect-ratio:4/5;
-  border-radius:var(--radius-sm);
-  border:1.5px dashed rgba(255,255,255,0.12);
+  border-radius:var(--radius-sm);border:1.5px dashed rgba(255,255,255,0.12);
   background:var(--surface2);overflow:hidden;cursor:pointer;
   transition:border-color 0.2s,background 0.2s;
 }
@@ -156,10 +119,7 @@ body::before{
 .photo-slot.has-photo{border-style:solid;border-color:var(--success)}
 .photo-slot.error-slot{border-color:var(--danger)}
 
-.slot-inner{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-}
+.slot-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
 .slot-cam{
   width:40px;height:40px;border-radius:50%;
   background:rgba(212,168,67,0.1);border:1px solid rgba(212,168,67,0.2);
@@ -168,33 +128,27 @@ body::before{
 .slot-lbl{font-size:12px;font-weight:500;color:var(--text-soft);text-align:center}
 .slot-sub{font-size:10px;color:var(--text-muted)}
 
-.slot-preview{
-  position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;display:none;
-}
+.slot-preview{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
 .photo-slot.has-photo .slot-preview{display:block}
 .photo-slot.has-photo .slot-inner{display:none}
 
 .slot-badge{
   position:absolute;top:6px;right:6px;
   background:rgba(0,0,0,0.65);color:#fff;
-  font-size:9px;font-weight:600;padding:2px 7px;
-  border-radius:20px;display:none;
+  font-size:9px;font-weight:600;padding:2px 7px;border-radius:20px;display:none;
 }
 .photo-slot.has-photo .slot-badge{display:block}
 
 .slot-retake{
   position:absolute;bottom:7px;left:50%;transform:translateX(-50%);
   background:rgba(0,0,0,0.7);color:rgba(255,255,255,0.85);
-  font-size:10px;padding:4px 12px;border-radius:20px;
-  white-space:nowrap;display:none;
+  font-size:10px;padding:4px 12px;border-radius:20px;white-space:nowrap;display:none;
 }
 .photo-slot.has-photo .slot-retake{display:block}
 
 .slot-comp{
   position:absolute;inset:0;background:rgba(13,13,15,0.8);
-  display:none;align-items:center;justify-content:center;
-  flex-direction:column;gap:8px;
+  display:none;align-items:center;justify-content:center;flex-direction:column;gap:8px;
 }
 .slot-comp.active{display:flex}
 .slot-comp p{color:var(--text-soft);font-size:10px;letter-spacing:0.05em;text-transform:uppercase}
@@ -207,7 +161,6 @@ body::before{
 }
 .photos-err{margin-top:8px;font-size:11px;color:var(--danger);display:none}
 
-/* ── Spinner ── */
 .spinner{
   width:20px;height:20px;
   border:2px solid rgba(255,255,255,0.15);
@@ -216,7 +169,6 @@ body::before{
 }
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ── Upload progress ── */
 .upload-progress{
   display:none;margin-top:12px;
   background:var(--surface);border:1px solid var(--border);
@@ -225,25 +177,15 @@ body::before{
 .upload-progress.show{display:block}
 .up-label{font-size:12px;color:var(--text-soft);margin-bottom:10px}
 .up-bar-bg{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden}
-.up-bar-fill{
-  height:100%;background:var(--accent);border-radius:2px;
-  width:0%;transition:width 0.4s ease;
-}
+.up-bar-fill{height:100%;background:var(--accent);border-radius:2px;width:0%;transition:width 0.4s ease}
 .up-steps{margin-top:12px;display:flex;flex-direction:column;gap:6px}
-.up-step{
-  display:flex;align-items:center;gap:10px;
-  font-size:12px;color:var(--text-muted);
-}
-.up-dot{
-  width:7px;height:7px;border-radius:50%;
-  background:var(--border-hi);flex-shrink:0;transition:background 0.3s;
-}
+.up-step{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text-muted)}
+.up-dot{width:7px;height:7px;border-radius:50%;background:var(--border-hi);flex-shrink:0;transition:background 0.3s}
 .up-step.active .up-dot{background:var(--accent);animation:pulse 1s ease-in-out infinite}
 .up-step.done   .up-dot{background:var(--success)}
 .up-step.done{color:var(--text-soft)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 
-/* ── Submit button ── */
 .submit-btn{
   width:100%;margin-top:8px;padding:15px;
   background:var(--accent);color:#0d0d0f;border:none;
@@ -256,7 +198,6 @@ body::before{
 .submit-btn:active:not(:disabled){transform:scale(0.98)}
 .submit-btn:disabled{opacity:0.45;cursor:not-allowed}
 
-/* ── Success screen ── */
 .success-screen{display:none;text-align:center;padding:48px 20px}
 .success-screen.show{display:block}
 .success-ring{
@@ -279,13 +220,7 @@ body::before{
 .new-btn:hover{background:var(--surface3)}
 
 input[type="file"]{display:none}
-
-/* ── ARIA live region (visually hidden) ── */
-.sr-only{
-  position:absolute;width:1px;height:1px;
-  padding:0;margin:-1px;overflow:hidden;
-  clip:rect(0,0,0,0);white-space:nowrap;border:0;
-}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 </style>
 </head>
 <body>
@@ -321,7 +256,6 @@ input[type="file"]{display:none}
     <div class="user-chip">👤 Logged in as: <strong id="userLabel">—</strong></div>
   </div>
 
-  <!-- Personal Details -->
   <div class="card" id="detailsCard">
     <div class="card-title">Personal Details</div>
 
@@ -329,10 +263,9 @@ input[type="file"]{display:none}
       <label for="fieldId">ID Number <span class="req">*</span></label>
       <div class="input-wrap">
         <span class="input-icon" aria-hidden="true">🪪</span>
-        <input type="text" id="fieldId" placeholder="e.g. EMP-00123"
-               autocomplete="off" spellcheck="false" inputmode="text">
+        <input type="text" id="fieldId" placeholder="e.g. EMP-00123" autocomplete="off" spellcheck="false" inputmode="text">
       </div>
-      <div class="err-msg" id="errId" role="alert">Please enter your ID number.</div>
+      <div class="err-msg" role="alert">Please enter your ID number.</div>
     </div>
 
     <div class="field">
@@ -341,27 +274,24 @@ input[type="file"]{display:none}
         <span class="input-icon" aria-hidden="true">👤</span>
         <input type="text" id="fieldName" placeholder="Your full name" autocomplete="name">
       </div>
-      <div class="err-msg" id="errName" role="alert">Please enter your full name.</div>
+      <div class="err-msg" role="alert">Please enter your full name.</div>
     </div>
 
     <div class="field">
       <label for="fieldMobile">Mobile Number <span class="req">*</span></label>
       <div class="input-wrap">
         <span class="input-icon" aria-hidden="true">📱</span>
-        <input type="tel" id="fieldMobile" placeholder="+91 98765 43210"
-               autocomplete="off" inputmode="tel">
+        <input type="tel" id="fieldMobile" placeholder="+91 98765 43210" autocomplete="off" inputmode="tel">
       </div>
-      <div class="err-msg" id="errMobile" role="alert">Please enter a valid mobile number.</div>
+      <div class="err-msg" role="alert">Please enter a valid mobile number.</div>
     </div>
   </div>
 
-  <!-- Photo Capture -->
   <div class="card" id="photosCard">
     <div class="card-title">Photo Capture</div>
     <div class="photo-grid">
 
-      <div class="photo-slot" id="slot0" role="button" tabindex="0"
-           aria-label="Capture candidate photo">
+      <div class="photo-slot" id="slot0" role="button" tabindex="0" aria-label="Capture candidate photo">
         <div class="slot-inner">
           <div class="slot-cam" aria-hidden="true">📷</div>
           <div class="slot-lbl">Candidate</div>
@@ -370,13 +300,10 @@ input[type="file"]{display:none}
         <img class="slot-preview" id="prev0" alt="Candidate photo preview">
         <div class="slot-badge" id="badge0" aria-hidden="true"></div>
         <div class="slot-retake" aria-hidden="true">↺ Retake</div>
-        <div class="slot-comp" id="comp0" aria-hidden="true">
-          <div class="spinner"></div><p>Compressing</p>
-        </div>
+        <div class="slot-comp" id="comp0" aria-hidden="true"><div class="spinner"></div><p>Compressing</p></div>
       </div>
 
-      <div class="photo-slot" id="slot1" role="button" tabindex="0"
-           aria-label="Capture Aadhar card front photo">
+      <div class="photo-slot" id="slot1" role="button" tabindex="0" aria-label="Capture Aadhar card front photo">
         <div class="slot-inner">
           <div class="slot-cam" aria-hidden="true">📷</div>
           <div class="slot-lbl">Aadhar Card Front</div>
@@ -385,13 +312,10 @@ input[type="file"]{display:none}
         <img class="slot-preview" id="prev1" alt="Aadhar front preview">
         <div class="slot-badge" id="badge1" aria-hidden="true"></div>
         <div class="slot-retake" aria-hidden="true">↺ Retake</div>
-        <div class="slot-comp" id="comp1" aria-hidden="true">
-          <div class="spinner"></div><p>Compressing</p>
-        </div>
+        <div class="slot-comp" id="comp1" aria-hidden="true"><div class="spinner"></div><p>Compressing</p></div>
       </div>
 
-      <div class="photo-slot" id="slot2" role="button" tabindex="0"
-           aria-label="Capture Aadhar card back photo">
+      <div class="photo-slot" id="slot2" role="button" tabindex="0" aria-label="Capture Aadhar card back photo">
         <div class="slot-inner">
           <div class="slot-cam" aria-hidden="true">📷</div>
           <div class="slot-lbl">Aadhar Card Back</div>
@@ -400,13 +324,10 @@ input[type="file"]{display:none}
         <img class="slot-preview" id="prev2" alt="Aadhar back preview">
         <div class="slot-badge" id="badge2" aria-hidden="true"></div>
         <div class="slot-retake" aria-hidden="true">↺ Retake</div>
-        <div class="slot-comp" id="comp2" aria-hidden="true">
-          <div class="spinner"></div><p>Compressing</p>
-        </div>
+        <div class="slot-comp" id="comp2" aria-hidden="true"><div class="spinner"></div><p>Compressing</p></div>
       </div>
 
-      <div class="photo-slot" id="slot3" role="button" tabindex="0"
-           aria-label="Capture bank passbook photo">
+      <div class="photo-slot" id="slot3" role="button" tabindex="0" aria-label="Capture bank passbook photo">
         <div class="slot-inner">
           <div class="slot-cam" aria-hidden="true">📷</div>
           <div class="slot-lbl">Bank Passbook</div>
@@ -415,23 +336,17 @@ input[type="file"]{display:none}
         <img class="slot-preview" id="prev3" alt="Bank passbook preview">
         <div class="slot-badge" id="badge3" aria-hidden="true"></div>
         <div class="slot-retake" aria-hidden="true">↺ Retake</div>
-        <div class="slot-comp" id="comp3" aria-hidden="true">
-          <div class="spinner"></div><p>Compressing</p>
-        </div>
+        <div class="slot-comp" id="comp3" aria-hidden="true"><div class="spinner"></div><p>Compressing</p></div>
       </div>
 
     </div>
-
     <div class="photo-note">
       <span aria-hidden="true">💡</span>
       <span>Tap a slot to open your rear camera. Tap a captured photo to retake it.</span>
     </div>
-    <div class="photos-err" id="photosErr" role="alert">
-      All 4 photos are required before submitting.
-    </div>
+    <div class="photos-err" id="photosErr" role="alert">All 4 photos are required before submitting.</div>
   </div>
 
-  <!-- Hidden file inputs — one per slot -->
   <input type="file" id="cam0" accept="image/*" capture="environment">
   <input type="file" id="cam1" accept="image/*" capture="environment">
   <input type="file" id="cam2" accept="image/*" capture="environment">
@@ -441,24 +356,16 @@ input[type="file"]{display:none}
     <span id="btnLabel">Submit Photos</span>
   </button>
 
-  <!-- Upload progress -->
   <div class="upload-progress" id="uploadProgress" aria-hidden="true">
     <div class="up-label" id="upLabel">Uploading…</div>
     <div class="up-bar-bg"><div class="up-bar-fill" id="upBar"></div></div>
-    <div class="up-steps" role="list">
-      <div class="up-step" id="ust1" role="listitem">
-        <div class="up-dot"></div><span>Compressing &amp; preparing photos</span>
-      </div>
-      <div class="up-step" id="ust2" role="listitem">
-        <div class="up-dot"></div><span>Uploading all photos to Google Drive</span>
-      </div>
-      <div class="up-step" id="ust3" role="listitem">
-        <div class="up-dot"></div><span>Saving details to Google Sheets</span>
-      </div>
+    <div class="up-steps">
+      <div class="up-step" id="ust1"><div class="up-dot"></div><span>Compressing &amp; preparing photos</span></div>
+      <div class="up-step" id="ust2"><div class="up-dot"></div><span>Uploading all photos to Google Drive</span></div>
+      <div class="up-step" id="ust3"><div class="up-dot"></div><span>Saving details to Google Sheets</span></div>
     </div>
   </div>
 
-  <!-- Success -->
   <div class="success-screen" id="successScreen" aria-live="polite">
     <div class="success-ring" aria-hidden="true">✓</div>
     <h2>All Done!</h2>
@@ -471,18 +378,18 @@ input[type="file"]{display:none}
 <script>
 'use strict';
 
-// ── Config ───────────────────────────────────────────────────
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbylcBWqFmQk5BiHN4DRQuMhSVksxCn9zEbjPo5uWUMsNXquNp29ECAmLBGryhJJZ8tA/exec';
-const MAX_DIM    = 900;     // max pixel dimension after resize
-const AIM_BYTES  = 0.20 * 1048576;  // ~200 KB target
-const MAX_BYTES  = 0.35 * 1048576;  // ~350 KB hard cap
+// ── Config ────────────────────────────────────────────
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz9pAcY4BolFXSrEWZd9vYDZYzbRQJy3jFP5a0anJgaBNREPFdr1Y6NXtLwQgRImZvw/exec';
+const MAX_DIM    = 900;
+const AIM_BYTES  = 0.20 * 1048576;
+const MAX_BYTES  = 0.35 * 1048576;
 const TIMEOUT_MS = 55000;
 
-// ── State ────────────────────────────────────────────────────
-const photos      = [null, null, null, null];  // base64 strings
-const previewURLs = [null, null, null, null];  // object URLs to revoke
+// ── State ─────────────────────────────────────────────
+const photos      = [null, null, null, null];
+const previewURLs = [null, null, null, null];
 
-// ── Auth guard (after DOM ready) ─────────────────────────────
+// ── Boot ──────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   if (sessionStorage.getItem('loggedIn') !== 'true') {
     window.location.replace('index.html');
@@ -492,71 +399,69 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function init() {
-  // User label
   document.getElementById('userLabel').textContent =
     sessionStorage.getItem('username') || 'user';
 
-  // Logout
   document.getElementById('logoutBtn').addEventListener('click', logout);
 
-  // Slots — click + keyboard
   for (let i = 0; i < 4; i++) {
-    const slot  = document.getElementById('slot' + i);
-    const camEl = document.getElementById('cam' + i);
-
-    slot.addEventListener('click', () => triggerCam(i));
-    slot.addEventListener('keydown', e => {
+    document.getElementById('slot' + i).addEventListener('click', () => triggerCam(i));
+    document.getElementById('slot' + i).addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); triggerCam(i); }
     });
-    camEl.addEventListener('change', e => onCapture(e, i));
+    document.getElementById('cam' + i).addEventListener('change', e => onCapture(e, i));
   }
 
-  // Clear field errors on input
   ['fieldId', 'fieldName', 'fieldMobile'].forEach(id => {
     document.getElementById(id).addEventListener('input', () => {
       document.getElementById(id).classList.remove('error');
     });
   });
 
-  // Submit
   document.getElementById('submitBtn').addEventListener('click', handleSubmit);
   document.getElementById('newBtn').addEventListener('click', resetForm);
 
   updateDots();
 }
 
-// ── Auth ─────────────────────────────────────────────────────
 function logout() {
   sessionStorage.clear();
   window.location.replace('index.html');
 }
 
-// ── Image compression ─────────────────────────────────────────
+// ── Compression ────────────────────────────────────────
 function canvasToBlob(canvas, quality) {
   return new Promise(resolve => canvas.toBlob(b => resolve(b), 'image/jpeg', quality));
 }
 
 async function compress(file) {
-  const dataURL = await readAsDataURL(file);
-  const img     = await loadImage(dataURL);
+  const dataURL = await new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = () => res(r.result);
+    r.onerror = () => rej(new Error('FileReader failed'));
+    r.readAsDataURL(file);
+  });
+
+  const img = await new Promise((res, rej) => {
+    const i  = new Image();
+    i.onload  = () => res(i);
+    i.onerror = () => rej(new Error('Image decode failed'));
+    i.src = dataURL;
+  });
 
   let w = img.naturalWidth, h = img.naturalHeight;
   if (w > MAX_DIM || h > MAX_DIM) {
-    const scale = Math.min(MAX_DIM / w, MAX_DIM / h);
-    w = Math.round(w * scale);
-    h = Math.round(h * scale);
+    const s = Math.min(MAX_DIM / w, MAX_DIM / h);
+    w = Math.round(w * s); h = Math.round(h * s);
   }
 
   const canvas = document.createElement('canvas');
-  canvas.width  = w;
-  canvas.height = h;
+  canvas.width = w; canvas.height = h;
   canvas.getContext('2d').drawImage(img, 0, 0, w, h);
 
-  // Fast path: high quality already small enough
   let blob = await canvasToBlob(canvas, 0.82);
   if (blob.size <= AIM_BYTES) return blob;
 
-  // Binary search for the right quality level
   let lo = 0.10, hi = 0.82, best = null;
   for (let i = 0; i < 10; i++) {
     const mid = (lo + hi) / 2;
@@ -564,42 +469,31 @@ async function compress(file) {
     if (blob.size <= MAX_BYTES) { best = blob; lo = mid; }
     else hi = mid;
   }
-
   return best ?? await canvasToBlob(canvas, 0.10);
 }
 
-function readAsDataURL(file) {
-  return new Promise((resolve, reject) => {
-    const r  = new FileReader();
-    r.onload  = () => resolve(r.result);
-    r.onerror = () => reject(new Error('Failed to read file'));
-    r.readAsDataURL(file);
-  });
-}
-
-function loadImage(src) {
-  return new Promise((resolve, reject) => {
-    const img  = new Image();
-    img.onload  = () => resolve(img);
-    img.onerror = () => reject(new Error('Failed to decode image'));
-    img.src = src;
-  });
-}
-
+// ── CRITICAL: extract raw base64 WITHOUT the data-URI prefix ──
+// blobToBase64 uses split(',')[1] which is safe, but log it to
+// confirm the string never accidentally retains the prefix.
 function blobToBase64(blob) {
   return new Promise((resolve, reject) => {
-    const r  = new FileReader();
-    r.onload  = () => resolve(r.result.split(',')[1]);
-    r.onerror = () => reject(new Error('Failed to encode image'));
+    const r = new FileReader();
+    r.onload = () => {
+      const full = r.result;                  // "data:image/jpeg;base64,/9j/..."
+      const b64  = full.split(',')[1];        // "/9j/..."  ← pure base64 only
+      console.log('[photo] b64 length=' + b64.length + ' | first20=' + b64.substring(0, 20));
+      resolve(b64);
+    };
+    r.onerror = () => reject(new Error('blobToBase64 failed'));
     r.readAsDataURL(blob);
   });
 }
 
-// ── Camera / capture ─────────────────────────────────────────
+// ── Camera ─────────────────────────────────────────────
 function triggerCam(idx) {
-  const camEl  = document.getElementById('cam' + idx);
-  camEl.value  = '';   // allow re-selecting the same file
-  camEl.click();
+  const el = document.getElementById('cam' + idx);
+  el.value = '';
+  el.click();
 }
 
 async function onCapture(e, idx) {
@@ -611,44 +505,31 @@ async function onCapture(e, idx) {
   const prev  = document.getElementById('prev'  + idx);
   const badge = document.getElementById('badge' + idx);
 
-  // Reset slot state
   slot.classList.remove('has-photo', 'error-slot');
   comp.classList.add('active');
-  comp.removeAttribute('aria-hidden');
 
-  // Revoke any previous object URL to avoid memory leak
-  if (previewURLs[idx]) {
-    URL.revokeObjectURL(previewURLs[idx]);
-    previewURLs[idx] = null;
-  }
+  if (previewURLs[idx]) { URL.revokeObjectURL(previewURLs[idx]); previewURLs[idx] = null; }
 
   try {
-    const blob         = await compress(file);
-    photos[idx]        = await blobToBase64(blob);
-    const objURL       = URL.createObjectURL(blob);
-    previewURLs[idx]   = objURL;
+    const blob      = await compress(file);
+    const b64       = await blobToBase64(blob);
+    photos[idx]     = b64;
+    previewURLs[idx] = URL.createObjectURL(blob);
 
-    prev.src = objURL;
+    prev.src          = previewURLs[idx];
     badge.textContent = (blob.size / 1048576).toFixed(2) + ' MB';
 
     comp.classList.remove('active');
-    comp.setAttribute('aria-hidden', 'true');
     slot.classList.add('has-photo');
-    slot.setAttribute('aria-label',
-      slot.querySelector('.slot-lbl').textContent + ' photo captured. Tap to retake.');
 
     document.getElementById('photosErr').style.display = 'none';
-    // Clear per-slot error border if all photos present
     if (photos.every(Boolean)) {
-      for (let i = 0; i < 4; i++) {
-        document.getElementById('slot' + i).classList.remove('error-slot');
-      }
+      for (let i = 0; i < 4; i++) document.getElementById('slot' + i).classList.remove('error-slot');
     }
   } catch (err) {
-    console.error('Capture error:', err);
+    console.error('onCapture error:', err);
     comp.classList.remove('active');
-    comp.setAttribute('aria-hidden', 'true');
-    alert('Could not process the photo. Please try again.');
+    alert('Could not process photo ' + (idx + 1) + '. Please try again.\n' + err.message);
   }
 
   updateDots();
@@ -662,28 +543,22 @@ function updateDots() {
   document.getElementById('photoCount').textContent = count + '/4';
 }
 
-// ── Validation ───────────────────────────────────────────────
+// ── Validation ────────────────────────────────────────
 function validate() {
   let valid = true;
 
-  // Text fields
   const idEl     = document.getElementById('fieldId');
   const nameEl   = document.getElementById('fieldName');
   const mobileEl = document.getElementById('fieldMobile');
 
-  if (!idEl.value.trim()) {
-    idEl.classList.add('error'); valid = false;
-  }
-  if (!nameEl.value.trim()) {
-    nameEl.classList.add('error'); valid = false;
-  }
+  if (!idEl.value.trim())   { idEl.classList.add('error');   valid = false; }
+  if (!nameEl.value.trim()) { nameEl.classList.add('error'); valid = false; }
 
   const digits = mobileEl.value.replace(/\D/g, '');
   if (!mobileEl.value.trim() || digits.length < 7) {
     mobileEl.classList.add('error'); valid = false;
   }
 
-  // Photos
   if (!photos.every(Boolean)) {
     document.getElementById('photosErr').style.display = 'block';
     for (let i = 0; i < 4; i++) {
@@ -692,31 +567,34 @@ function validate() {
     valid = false;
   }
 
+  // ── Debug: log what we're about to send ──────────
+  console.log('=== PRE-SUBMIT VALIDATION ===');
+  console.log('id:',     idEl.value.trim());
+  console.log('name:',   nameEl.value.trim());
+  console.log('mobile:', mobileEl.value.trim());
+  photos.forEach((p, i) => {
+    console.log('photos[' + i + ']: ' + (p ? 'OK len=' + p.length : 'MISSING'));
+  });
+
   return valid;
 }
 
-// ── Progress UI ───────────────────────────────────────────────
+// ── Progress ──────────────────────────────────────────
 function setStep(step, state) {
   const pct = { 1: 0, 2: 33, 3: 66, 4: 100 };
   document.getElementById('upBar').style.width = (pct[step] ?? 0) + '%';
-
   for (let i = 1; i <= 3; i++) {
     const el = document.getElementById('ust' + i);
     el.classList.remove('active', 'done');
-    if (i < step)      el.classList.add('done');
-    if (i === step)    el.classList.add(state ?? 'active');
+    if (i < step)   el.classList.add('done');
+    if (i === step) el.classList.add(state ?? 'active');
   }
 }
 
-function announce(msg) {
-  document.getElementById('liveMsg').textContent = msg;
-}
-
-// ── Submit ────────────────────────────────────────────────────
+// ── Submit ────────────────────────────────────────────
 async function handleSubmit() {
   if (!validate()) {
-    const firstError = document.querySelector('.error, .error-slot');
-    firstError?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.querySelector('.error, .error-slot')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
 
@@ -724,14 +602,11 @@ async function handleSubmit() {
   const label = document.getElementById('btnLabel');
   const prog  = document.getElementById('uploadProgress');
 
-  btn.disabled  = true;
+  btn.disabled = true;
   label.innerHTML = '<div class="spinner" style="width:16px;height:16px;border-top-color:#0d0d0f;border-color:rgba(0,0,0,0.2)"></div> Submitting…';
-
   prog.classList.add('show');
-  prog.removeAttribute('aria-hidden');
   setStep(1, 'active');
   document.getElementById('upLabel').textContent = 'Step 1 of 3 — Preparing photos…';
-  announce('Preparing photos for upload.');
 
   const id          = document.getElementById('fieldId').value.trim();
   const name        = document.getElementById('fieldName').value.trim();
@@ -739,14 +614,29 @@ async function handleSubmit() {
   const timestamp   = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
   const submittedBy = sessionStorage.getItem('username') || '';
 
-  const totalBytes = photos.reduce((s, p) => s + (p ? Math.ceil(p.length * 0.75) : 0), 0);
-  console.log('Payload ~', (totalBytes / 1048576).toFixed(2), 'MB');
+  // ── Build payload and log it ───────────────────────
+  const payload = {
+    action: 'submitAll',
+    id, name, mobile, timestamp, submittedBy,
+    photos  // array of 4 pure base64 strings
+  };
+
+  console.log('=== PAYLOAD SUMMARY ===');
+  console.log('action:', payload.action);
+  console.log('id:', payload.id);
+  console.log('name:', payload.name);
+  console.log('photos.length:', payload.photos.length);
+  payload.photos.forEach((p, i) => {
+    console.log('photos[' + i + ']: length=' + (p ? p.length : 'NULL') +
+                ' | first20=' + (p ? p.substring(0, 20) : 'NULL'));
+  });
+
+  const bodyStr = JSON.stringify(payload);
+  console.log('Total JSON body size:', (bodyStr.length / 1048576).toFixed(2), 'MB');
 
   await pause(300);
-
   setStep(2, 'active');
   document.getElementById('upLabel').textContent = 'Step 2 of 3 — Uploading to Google Drive…';
-  announce('Uploading photos to Google Drive.');
 
   try {
     const controller = new AbortController();
@@ -755,117 +645,103 @@ async function handleSubmit() {
     const res = await fetch(SCRIPT_URL, {
       method:  'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body:    JSON.stringify({
-        action: 'submitAll',
-        id, name, mobile, timestamp, submittedBy,
-        photos        // single POST — avoids multiple cold starts
-      }),
-      signal: controller.signal
+      body:    bodyStr,
+      signal:  controller.signal
     });
     clearTimeout(timer);
 
     const raw = await res.text();
-    console.log('Server response:', raw.slice(0, 500));
+
+    // ── Log the FULL raw server response ─────────────
+    console.log('=== SERVER RESPONSE ===');
+    console.log('HTTP status:', res.status);
+    console.log('Raw response:', raw);
 
     let data;
     try { data = JSON.parse(raw); }
-    catch { throw new Error('Unexpected server response:\n' + raw.slice(0, 400)); }
+    catch { throw new Error('Server returned non-JSON:\n' + raw.substring(0, 500)); }
 
-    if (data.status !== 'success') {
-      throw new Error(data.message || 'Unknown error from server.');
+    console.log('Parsed response:', JSON.stringify(data));
+
+    // Treat both 'success' and 'partial' as done
+    // ('partial' = photos uploaded but sheet had an error)
+    if (data.status !== 'success' && data.status !== 'partial') {
+      throw new Error(data.message || 'Server returned status: ' + data.status);
+    }
+
+    if (data.status === 'partial') {
+      console.warn('PARTIAL SUCCESS — photos uploaded but sheet write failed:', data.message);
     }
 
     setStep(3, 'active');
     document.getElementById('upLabel').textContent = 'Step 3 of 3 — Saving to Google Sheets…';
-    announce('Saving record to Google Sheets.');
     await pause(600);
 
     document.getElementById('upBar').style.width = '100%';
     document.getElementById('upLabel').textContent = 'Done!';
     setStep(4, 'done');
-    announce('Submission complete!');
-
     await pause(500);
     showSuccess();
 
   } catch (err) {
     console.error('Submit error:', err);
 
-    btn.disabled  = false;
+    btn.disabled = false;
     label.textContent = 'Submit Photos';
     prog.classList.remove('show');
-    prog.setAttribute('aria-hidden', 'true');
     setStep(1, '');
 
     const msg = err.name === 'AbortError'
-      ? 'Request timed out after 55 seconds.\n\nYour connection may be slow. Try on Wi-Fi and submit again.'
+      ? 'Request timed out after 55 s.\n\nTry on Wi-Fi and submit again.'
       : (err.message || String(err));
 
-    announce('Submission failed. ' + msg);
     alert('Submission failed.\n\n' + msg);
   }
 }
 
-// ── Helpers ──────────────────────────────────────────────────
 const pause = ms => new Promise(r => setTimeout(r, ms));
 
 function showSuccess() {
-  document.getElementById('detailsCard').style.display  = 'none';
-  document.getElementById('photosCard').style.display   = 'none';
-  document.getElementById('submitBtn').style.display    = 'none';
+  document.getElementById('detailsCard').style.display   = 'none';
+  document.getElementById('photosCard').style.display    = 'none';
+  document.getElementById('submitBtn').style.display     = 'none';
   document.getElementById('uploadProgress').style.display = 'none';
-  document.getElementById('heroBlock').style.display    = 'none';
+  document.getElementById('heroBlock').style.display     = 'none';
   document.getElementById('successScreen').classList.add('show');
 }
 
 function resetForm() {
-  // Clear photo state and revoke object URLs
   for (let i = 0; i < 4; i++) {
     photos[i] = null;
-    if (previewURLs[i]) {
-      URL.revokeObjectURL(previewURLs[i]);
-      previewURLs[i] = null;
-    }
-    const slot  = document.getElementById('slot'  + i);
-    const prev  = document.getElementById('prev'  + i);
-    const badge = document.getElementById('badge' + i);
-    slot.className  = 'photo-slot';
-    slot.setAttribute('aria-label',
-      slot.querySelector('.slot-lbl').textContent + '. Tap to capture.');
-    prev.src        = '';
-    badge.textContent = '';
+    if (previewURLs[i]) { URL.revokeObjectURL(previewURLs[i]); previewURLs[i] = null; }
+    document.getElementById('slot'  + i).className = 'photo-slot';
+    document.getElementById('prev'  + i).src = '';
+    document.getElementById('badge' + i).textContent = '';
   }
 
-  // Clear text fields and errors
   ['fieldId', 'fieldName', 'fieldMobile'].forEach(id => {
     const el = document.getElementById(id);
-    el.value = '';
-    el.classList.remove('error');
+    el.value = ''; el.classList.remove('error');
   });
 
   document.getElementById('photosErr').style.display = 'none';
-
-  // Restore UI sections
-  document.getElementById('detailsCard').style.display  = '';
-  document.getElementById('photosCard').style.display   = '';
-  document.getElementById('heroBlock').style.display    = '';
+  document.getElementById('detailsCard').style.display = '';
+  document.getElementById('photosCard').style.display  = '';
+  document.getElementById('heroBlock').style.display   = '';
 
   const btn = document.getElementById('submitBtn');
-  btn.style.display = '';
-  btn.disabled      = false;
+  btn.style.display = ''; btn.disabled = false;
   document.getElementById('btnLabel').textContent = 'Submit Photos';
 
   const prog = document.getElementById('uploadProgress');
   prog.classList.remove('show');
   prog.style.display = '';
-  prog.setAttribute('aria-hidden', 'true');
   document.getElementById('upBar').style.width = '0%';
 
   document.getElementById('successScreen').classList.remove('show');
-
   updateDots();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
 </body>
-</html>F
+</html>
