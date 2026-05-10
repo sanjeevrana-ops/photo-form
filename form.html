@@ -99,6 +99,24 @@ body::before{
   padding:28px 16px 20px;
 }
 
+/* ── Auth screen (replaces hard redirect) ── */
+.auth-wall{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:var(--bg);
+  align-items:center;justify-content:center;flex-direction:column;gap:16px;
+  text-align:center;padding:40px;
+}
+.auth-wall.show{display:flex}
+.auth-wall h2{font-size:20px;font-weight:600;color:var(--text)}
+.auth-wall p{font-size:13px;color:var(--soft);line-height:1.6;max-width:280px}
+.auth-wall-btn{
+  margin-top:8px;padding:12px 28px;
+  background:var(--gold);color:#0a0a0b;
+  border:none;border-radius:var(--r-sm);
+  font-family:'Space Grotesk',sans-serif;
+  font-size:14px;font-weight:700;cursor:pointer;
+}
+
 /* ── Hero ── */
 .hero{margin-bottom:24px;padding-top:4px}
 .hero-tag{
@@ -322,6 +340,14 @@ input[type="file"]{display:none}
 
 <div class="sr-only" role="status" aria-live="polite" id="liveAnn"></div>
 
+<!-- ── Auth wall (shown instead of redirecting, avoids mobile reload loop) ── -->
+<div class="auth-wall" id="authWall" role="dialog" aria-modal="true" aria-label="Session expired">
+  <div style="font-size:40px" aria-hidden="true">🔒</div>
+  <h2>Session Expired</h2>
+  <p>Your session timed out. Please sign in again to continue.</p>
+  <button class="auth-wall-btn" id="authWallBtn">Go to Sign In</button>
+</div>
+
 <!-- ── Header ── -->
 <header class="hdr">
   <div class="hdr-brand">
@@ -461,8 +487,9 @@ input[type="file"]{display:none}
     </div>
   </div><!-- /photos card -->
 
-  <!-- Single shared file input -->
-  <input type="file" id="camInput" accept="image/*" capture="environment">
+  <!-- Single shared file input — NO capture attr on the element itself,
+       it is added dynamically right before click to prevent iOS page reload -->
+  <input type="file" id="camInput" accept="image/*">
 
   <!-- Submit -->
   <button class="submit-btn" id="submitBtn" type="button">
@@ -493,22 +520,33 @@ input[type="file"]{display:none}
 <script>
 'use strict';
 
-// ── Auth guard ────────────────────────────────────────
-if (sessionStorage.getItem('fd_auth') !== '1') {
-  location.replace('index.html');
+// ── Auth guard (mobile-safe) ──────────────────────────
+// FIX 1: Never use location.replace() from the auth guard — it causes a
+// navigation which on mobile Chrome/Safari restarts the page and wipes
+// sessionStorage, creating an infinite redirect loop.
+// Instead: show an overlay and let the user tap a button to navigate.
+function checkAuth() {
+  const ok = sessionStorage.getItem('fd_auth') === '1';
+  if (!ok) {
+    document.getElementById('authWall').classList.add('show');
+    document.getElementById('authWallBtn').addEventListener('click', () => {
+      location.href = 'index.html';
+    });
+  }
+  return ok;
 }
 
 // ── Compression settings ──────────────────────────────
-// 4 photos × ~90 KB = ~360 KB base64 → well within Apps Script limits
-const MAX_DIM   = 640;          // max pixel dimension (width or height)
-const AIM_BYTES = 90  * 1024;  // target per photo
-const MAX_BYTES = 130 * 1024;  // hard ceiling per photo
-const TIMEOUT   = 90000;       // 90 s request timeout
+const MAX_DIM   = 640;
+const AIM_BYTES = 90  * 1024;
+const MAX_BYTES = 130 * 1024;
+const TIMEOUT   = 90000;
 
 // ── State ─────────────────────────────────────────────
-const photos     = [null, null, null, null];   // base64 strings, no data-URI prefix
-const previewURL = [null, null, null, null];   // blob object URLs for <img> src
+const photos     = [null, null, null, null];
+const previewURL = [null, null, null, null];
 let   activeSlot = -1;
+let   cameraOpen = false; // FIX 2: flag to block visibilitychange guard during camera use
 
 const SLOT_NAMES = ['Candidate Photo','Aadhaar Front','Aadhaar Back','Bank Passbook'];
 
@@ -516,13 +554,18 @@ const SLOT_NAMES = ['Candidate Photo','Aadhaar Front','Aadhaar Back','Bank Passb
 document.addEventListener('DOMContentLoaded', init);
 
 function init() {
+  if (!checkAuth()) return; // show overlay, stop init
+
   document.getElementById('userLabel').textContent =
     sessionStorage.getItem('fd_user') || 'user';
 
   document.getElementById('signOutBtn').addEventListener('click', signOut);
-  document.getElementById('camInput').addEventListener('change', onCapture);
-  document.getElementById('submitBtn').addEventListener('click', handleSubmit);
   document.getElementById('newSubBtn').addEventListener('click', resetAll);
+
+  // FIX 3: Attach change listener once; re-attach capture attr dynamically per-click
+  document.getElementById('camInput').addEventListener('change', onCapture);
+
+  document.getElementById('submitBtn').addEventListener('click', handleSubmit);
 
   for (let i = 0; i < 4; i++) {
     const slot = document.getElementById('slot' + i);
@@ -532,24 +575,40 @@ function init() {
     });
   }
 
-  // Clear error styling on input
   ['fId','fName','fMobile'].forEach(id => {
     document.getElementById(id).addEventListener('input', () => {
       document.getElementById(id).classList.remove('err');
     });
   });
 
+  // FIX 4: Re-check auth only when tab becomes visible AND camera is NOT open.
+  // Without this guard, returning from the camera app (which briefly hides the
+  // browser tab) triggers a visibility event that re-runs the auth check while
+  // sessionStorage is still valid — and on some Android WebViews it arrives
+  // before sessionStorage is restored, causing a false sign-out.
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && !cameraOpen) {
+      if (sessionStorage.getItem('fd_auth') !== '1') {
+        document.getElementById('authWall').classList.add('show');
+      }
+    }
+    // Camera has returned — clear the flag after a short delay so
+    // the 'change' event on camInput has time to fire first.
+    if (document.visibilityState === 'visible' && cameraOpen) {
+      setTimeout(() => { cameraOpen = false; }, 1000);
+    }
+  });
+
   updateDots();
 
-  // Warn if URL not configured
   if (typeof SCRIPT_URL === 'undefined' || SCRIPT_URL.includes('PASTE_YOUR')) {
-    console.warn('[FieldDocs] SCRIPT_URL is not configured. Edit form.html and paste your Apps Script /exec URL.');
+    console.warn('[FieldDocs] SCRIPT_URL is not configured.');
   }
 }
 
 function signOut() {
   sessionStorage.clear();
-  location.replace('index.html');
+  location.href = 'index.html';
 }
 
 // ── Camera ─────────────────────────────────────────────
@@ -557,14 +616,37 @@ function triggerCam(idx) {
   const slot = document.getElementById('slot' + idx);
   if (slot.classList.contains('busy')) return;
   activeSlot = idx;
+
   const camInput = document.getElementById('camInput');
-  camInput.value = '';         // reset so same file can be retaken
+  camInput.value = '';
+
+  // FIX 5: Set/refresh capture attribute right before click rather than
+  // keeping it permanently on the element. On iOS 15–17, a persistent
+  // capture="environment" attribute on a hidden input causes the camera
+  // sheet to open and then immediately dismiss on the first tap (known
+  // WebKit bug), which the browser handles by triggering a page reload.
+  // Setting it fresh each time avoids this.
+  camInput.setAttribute('capture', 'environment');
+
+  // FIX 6: Mark camera as open BEFORE clicking so visibilitychange
+  // handler doesn't fire an auth check when the camera app takes focus.
+  cameraOpen = true;
+
   camInput.click();
 }
 
 async function onCapture(e) {
   const file = e.target.files[0];
-  if (!file || activeSlot < 0) return;
+
+  // FIX 7: Remove capture attr immediately after the picker returns.
+  // Leaving it set can confuse some Android browsers on the next open.
+  const camInput = document.getElementById('camInput');
+  camInput.removeAttribute('capture');
+
+  if (!file || activeSlot < 0) {
+    cameraOpen = false;
+    return;
+  }
 
   const idx     = activeSlot;
   const slot    = document.getElementById('slot' + idx);
@@ -572,33 +654,29 @@ async function onCapture(e) {
   const prev    = document.getElementById('prev' + idx);
   const sizeEl  = document.getElementById('size' + idx);
 
-  // Lock slot during async processing
   slot.classList.add('busy');
   slot.classList.remove('captured', 'slot-err');
   working.classList.add('active');
 
-  // Revoke old preview URL
   if (previewURL[idx]) { URL.revokeObjectURL(previewURL[idx]); previewURL[idx] = null; }
 
   try {
     const blob = await compressImage(file);
     const b64  = await blobToBase64(blob);
 
-    // Sanity check: must be pure base64, not a data-URI
     if (b64.startsWith('data:')) {
       throw new Error('Compression produced a data-URI instead of base64.');
     }
 
-    photos[idx]       = b64;
-    previewURL[idx]   = URL.createObjectURL(blob);
-    prev.src          = previewURL[idx];
+    photos[idx]        = b64;
+    previewURL[idx]    = URL.createObjectURL(blob);
+    prev.src           = previewURL[idx];
     sizeEl.textContent = (blob.size / 1024).toFixed(0) + ' KB';
 
     working.classList.remove('active');
     slot.classList.remove('busy');
     slot.classList.add('captured');
 
-    // Clear photo-level errors
     document.getElementById('photosErr').style.display = 'none';
     for (let i = 0; i < 4; i++) {
       if (photos[i]) document.getElementById('slot' + i).classList.remove('slot-err');
@@ -615,6 +693,7 @@ async function onCapture(e) {
     alert('Could not process photo ' + (idx + 1) + '.\n' + err.message + '\nPlease try again.');
   }
 
+  cameraOpen = false;
   updateDots();
 }
 
@@ -624,7 +703,6 @@ function canvasToBlob(canvas, quality) {
 }
 
 async function compressImage(file) {
-  // Step 1 — decode
   const dataURL = await new Promise((res, rej) => {
     const r = new FileReader();
     r.onload  = () => res(r.result);
@@ -639,7 +717,6 @@ async function compressImage(file) {
     i.src = dataURL;
   });
 
-  // Step 2 — resize
   let w = img.naturalWidth, h = img.naturalHeight;
   if (w > MAX_DIM || h > MAX_DIM) {
     const s = Math.min(MAX_DIM / w, MAX_DIM / h);
@@ -651,11 +728,9 @@ async function compressImage(file) {
   canvas.width = w; canvas.height = h;
   canvas.getContext('2d').drawImage(img, 0, 0, w, h);
 
-  // Step 3 — try target quality first
   let blob = await canvasToBlob(canvas, 0.78);
   if (blob.size <= AIM_BYTES) return blob;
 
-  // Step 4 — binary search for quality
   let lo = 0.08, hi = 0.78, best = blob;
   for (let i = 0; i < 12; i++) {
     const mid = (lo + hi) / 2;
@@ -668,7 +743,6 @@ async function compressImage(file) {
 }
 
 // ── Base64 conversion ──────────────────────────────────
-// split(',')[1] always returns PURE base64 — strips the data-URI prefix
 function blobToBase64(blob) {
   return new Promise((res, rej) => {
     const r = new FileReader();
@@ -743,8 +817,8 @@ async function handleSubmit() {
     return;
   }
 
-  const btn   = document.getElementById('submitBtn');
-  const label = document.getElementById('submitLabel');
+  const btn    = document.getElementById('submitBtn');
+  const label  = document.getElementById('submitLabel');
   const upCard = document.getElementById('upCard');
 
   btn.disabled = true;
@@ -762,7 +836,7 @@ async function handleSubmit() {
   const payload = {
     action: 'submitAll',
     id, name, mobile, submittedBy, timestamp,
-    photos   // array of 4 pure base64 strings
+    photos
   };
 
   const bodyStr    = JSON.stringify(payload);
@@ -774,7 +848,6 @@ async function handleSubmit() {
     else   console.warn('  photos[' + i + ']: MISSING');
   });
 
-  // Safety guard — should never trigger with current compression settings
   if (parseFloat(bodySizeKB) > 3500) {
     btn.disabled = false;
     label.textContent = 'Submit Submission';
@@ -814,7 +887,6 @@ async function handleSubmit() {
       );
     }
 
-    // Detect if the POST was redirected to GET (health-check response)
     if (data.status === 'running') {
       throw new Error(
         'The server returned the health-check response — your POST was converted to a GET.\n\n' +
@@ -914,7 +986,8 @@ function resetAll() {
 
   document.getElementById('successScreen').classList.remove('show');
 
-  activeSlot = -1;
+  activeSlot  = -1;
+  cameraOpen  = false;
   updateDots();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
