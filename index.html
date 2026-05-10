@@ -40,6 +40,7 @@
     overflow: hidden;
   }
  
+  /* Background grid */
   body::before {
     content: '';
     position: fixed;
@@ -51,6 +52,7 @@
     pointer-events: none;
   }
  
+  /* Glow */
   body::after {
     content: '';
     position: fixed;
@@ -78,6 +80,7 @@
     to   { opacity: 1; transform: translateY(0); }
   }
  
+  /* Top badge */
   .badge {
     display: inline-flex;
     align-items: center;
@@ -116,12 +119,14 @@
     line-height: 1.5;
   }
  
+  /* Divider */
   .divider {
     height: 1px;
     background: var(--border);
     margin-bottom: 28px;
   }
  
+  /* Fields */
   .field { margin-bottom: 16px; }
   .field label {
     display: block;
@@ -133,7 +138,9 @@
     margin-bottom: 8px;
   }
  
-  .input-wrap { position: relative; }
+  .input-wrap {
+    position: relative;
+  }
   .input-icon {
     position: absolute;
     left: 14px; top: 50%;
@@ -162,6 +169,7 @@
     border-color: var(--border-focus);
     background: rgba(255,255,255,0.04);
   }
+  .field input:focus ~ .input-icon,
   .input-wrap:focus-within .input-icon { color: var(--text-soft); }
   .field input.shake { animation: shake 0.4s ease; }
   @keyframes shake {
@@ -172,6 +180,7 @@
     80%{transform:translateX(5px)}
   }
  
+  /* Error */
   .error-msg {
     display: none;
     font-size: 11px;
@@ -185,6 +194,7 @@
   .error-msg.show { display: block; animation: fadeIn 0.2s ease; }
   @keyframes fadeIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:none} }
  
+  /* Login button */
   .login-btn {
     width: 100%;
     margin-top: 8px;
@@ -224,6 +234,7 @@
     color: var(--text-muted);
   }
  
+  /* Show/hide password toggle */
   .eye-btn {
     position: absolute;
     right: 12px; top: 50%;
@@ -278,12 +289,17 @@
 // Format: 'username': 'password'
 // ─────────────────────────────────────────────────────────────────
 const USERS = {
-  '0001': 'bable123',
+  'Admin':   'admin123',
+  'Javed1':   'Javed123',
+  'Sanjeevrana':   'password123',
+  'user3':   'pass003',
+  'agent01': 'field@01',
+  'agent02': 'field@02',
 };
 // ─────────────────────────────────────────────────────────────────
-
-// FIX: Use 'fd_auth' and 'fd_user' to match what form.html expects
-if (sessionStorage.getItem('fd_auth') === '1') {
+ 
+// If already logged in, skip to form
+if (sessionStorage.getItem('loggedIn') === 'true') {
   window.location.href = 'form.html';
 }
  
@@ -315,19 +331,21 @@ function handleLogin(e) {
     return;
   }
  
+  // Show loading state
   loginBtn.disabled = true;
   btnLabel.innerHTML = '';
   const spinner = document.createElement('div');
   spinner.className = 'spinner';
   loginBtn.prepend(spinner);
  
+  // Simulate brief auth check
   setTimeout(() => {
     const validPassword = USERS[username.toLowerCase()];
  
     if (validPassword && validPassword === password) {
-      // FIX: Store with keys 'fd_auth' and 'fd_user' to match form.html
-      sessionStorage.setItem('fd_auth', '1');
-      sessionStorage.setItem('fd_user', username.toLowerCase());
+      // Save session
+      sessionStorage.setItem('loggedIn', 'true');
+      sessionStorage.setItem('username', username.toLowerCase());
       window.location.href = 'form.html';
     } else {
       loginBtn.disabled = false;
@@ -335,6 +353,7 @@ function handleLogin(e) {
       btnLabel.textContent = 'Sign In';
       errorMsg.textContent = 'Incorrect username or password. Please try again.';
       errorMsg.classList.add('show');
+      // Shake inputs
       document.getElementById('username').classList.add('shake');
       document.getElementById('password').classList.add('shake');
       document.getElementById('password').value = '';
@@ -348,3 +367,4 @@ function handleLogin(e) {
 </script>
 </body>
 </html>
+ 
